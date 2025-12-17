@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Registro de Novedad</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+
+<style>
+:root{
+  --primario:#0d6efd;
+  --whatsapp:#25D366;
+  --fondo:#f1f4f8;
+  --card:#ffffff;
+  --texto:#1f2937;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:Segoe UI, Roboto, Arial, sans-serif;
+  background:var(--fondo);
+  color:var(--texto);
+}
+
+header{
+  background:linear-gradient(135deg,#0d6efd,#0b5ed7);
+  color:#fff;
+  padding:22px 16px;
+  text-align:center;
+}
+
+header h1{
+  margin:0;
+  font-size:1.3rem;
+}
+
+header p{
+  margin:6px 0 0;
+  font-size:0.85rem;
+  opacity:.9;
+}
+
+main{
+  padding:16px;
+  display:flex;
+  justify-content:center;
+}
+
+.card{
+  background:var(--card);
+  width:100%;
+  max-width:420px;
+  border-radius:18px;
+  padding:20px 16px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.section-title{
+  font-size:0.85rem;
+  font-weight:600;
+  margin-bottom:12px;
+  color:#374151;
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.field label{
+  display:block;
+  font-size:0.8rem;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.field input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  font-size:0.95rem;
+}
+
+.field input:focus{
+  outline:none;
+  border-color:var(--primario);
+}
+
+button{
+  width:100%;
+  padding:16px;
+  margin-top:18px;
+  border:none;
+  border-radius:16px;
+  font-size:1.05rem;
+  font-weight:700;
+  background:linear-gradient(135deg,#25D366,#1ebe57);
+  color:#fff;
+}
+
+footer{
+  text-align:center;
+  font-size:0.7rem;
+  color:#6b7280;
+  margin:10px 0 16px;
+}
+
+/* MÓVIL: pantalla completa */
+@media (max-width:480px){
+  main{padding:0;}
+  .card{
+    min-height:100vh;
+    border-radius:0;
+    box-shadow:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Registro de Novedad</h1>
+  <p>Ingreso inmediato · QR / Enlace directo</p>
+</header>
+
+<main>
+  <div class="card">
+
+    <div class="section-title">Información del ingreso</div>
+
+    <form>
+
+      <div class="field">
+        <label>Número de WhatsApp receptor</label>
+        <input type="tel" id="telefono" placeholder="Ej: 573001234567" required>
+      </div>
+
+      <div class="field">
+        <label>Lugar del ingreso</label>
+        <input list="lugares" id="lugar" placeholder="Ej: Urgencias" required>
+        <datalist id="lugares"></datalist>
+      </div>
+
+      <div class="field">
+        <label>Nombre completo</label>
+        <input type="text" id="nombre" placeholder="Nombre del paciente" required>
+      </div>
+
+      <div class="field">
+        <label>Cédula</label>
+        <input type="text" id="cedula" placeholder="Número de identificación" required>
+      </div>
+
+      <div class="field">
+        <label>Novedad</label>
+        <input list="novedades" id="novedad" placeholder="Seleccione o escriba la novedad" required>
+        <datalist id="novedades"></datalist>
+      </div>
+
+      <div class="field">
+        <label>Trasladado por</label>
+        <input list="traslado" id="trasladado" placeholder="Ej: Policía Nacional" required>
+        <datalist id="traslado"></datalist>
+      </div>
+
+      <button type="button" onclick="enviarWhatsApp()">WhatsApp</button>
+
+    </form>
+
+  </div>
+</main>
+
+<footer>
+  Sistema de registro rápido
+</footer>
+
+<script>
+// ===== DATOS BASE =====
+const datos = {
+  lugares: ["Urgencias", "Acceso Principal"],
+  novedades: [
+    "Persona herida por arma de fuego",
+    "Persona herida por arma blanca",
+    "Persona herida por agresión de la comunidad"
+  ],
+  traslado: ["Policía Nacional", "Comunidad", "Amigos / Familiares"]
+};
+
+// ===== CARGAR LISTAS =====
+function cargarDatalist(id, base){
+  const dl = document.getElementById(id);
+  const guardados = JSON.parse(localStorage.getItem(id)) || base;
+  dl.innerHTML = "";
+  guardados.forEach(v=>{
+    const o=document.createElement("option");
+    o.value=v;
+    dl.appendChild(o);
+  });
+}
+
+cargarDatalist("lugares", datos.lugares);
+cargarDatalist("novedades", datos.novedades);
+cargarDatalist("traslado", datos.traslado);
+
+// ===== TELÉFONO GUARDADO =====
+const telefonoEl=document.getElementById("telefono");
+const lugarEl=document.getElementById("lugar");
+const nombreEl=document.getElementById("nombre");
+const cedulaEl=document.getElementById("cedula");
+const novedadEl=document.getElementById("novedad");
+const trasladadoEl=document.getElementById("trasladado");
+
+const telGuardado = localStorage.getItem("telefono_guardado");
+if(telGuardado){
+  telefonoEl.value = telGuardado;
+}
+
+// ===== ENVIAR WHATSAPP =====
+function enviarWhatsApp(){
+  const telefono = telefonoEl.value.trim();
+  const lugar = lugarEl.value.trim();
+  const nombre = nombreEl.value.trim();
+  const cedula = cedulaEl.value.trim();
+  const novedad = novedadEl.value.trim();
+  const trasladado = trasladadoEl.value.trim();
+
+  if(!telefono||!lugar||!nombre||!cedula||!novedad||!trasladado){
+    alert("Complete todos los campos");
+    return;
+  }
+
+  localStorage.setItem("telefono_guardado", telefono);
+
+  const ahora = new Date();
+  const mensaje =
+`🚨 REGISTRO DE NOVEDAD
+
+📍 Lugar: ${lugar}
+👤 Nombre: ${nombre}
+🆔 Cédula: ${cedula}
+📋 Novedad: ${novedad}
+🚑 Trasladado por: ${trasladado}
+📅 Fecha: ${ahora.toLocaleDateString()}
+⏰ Hora: ${ahora.toLocaleTimeString()}`;
+
+  window.location.href =
+    "https://wa.me/"+telefono+"?text="+encodeURIComponent(mensaje);
+}
+</script>
+
+</body>
+</html>
