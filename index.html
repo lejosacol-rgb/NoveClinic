@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Clínico WhatsApp</title>
+<title>Registro Clínico WhatsApp - Interfaz Principal</title>
 <style>
 :root {
   --azul:#0d6efd;
@@ -11,102 +11,124 @@
   --texto:#333;
   --gris:#ccc;
 }
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 body {
   margin:0;
   font-family: Arial, sans-serif;
   background: var(--fondo);
   color: var(--texto);
 }
+
+/* Header y configuración */
 header {
   background: var(--azul);
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  font-size: 1.2em;
+  color:#fff;
+  padding:10px;
+  text-align:center;
+  font-size:1.3em;
   position: sticky;
   top:0;
-  z-index: 100;
+  z-index:100;
 }
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  background: #e9ecef;
-  padding: 5px 0;
-}
-nav button {
-  padding: 8px 12px;
-  margin:2px;
-  border: none;
-  background: var(--azul);
-  color:#fff;
+#configBtn {
+  position: fixed;
+  top:10px;
+  right:10px;
+  background:#ffc107;
+  border:none;
+  color:#000;
+  padding:8px 12px;
   border-radius:5px;
   cursor:pointer;
-  flex:1 1 45%;
+  z-index:200;
 }
-section {
+#configPanel {
   display:none;
-  padding:15px;
-}
-section.active {
-  display:block;
-}
-form {
-  display:flex;
-  flex-direction: column;
-}
-form label {
-  margin-top:10px;
-  margin-bottom:2px;
-}
-form input, form select, form button {
-  padding:7px;
-  font-size:1em;
-  width: 100%;
-}
-input[type="number"] {
-  -moz-appearance:textfield;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin:0;
-}
-textarea {
-  resize:none;
-  padding:7px;
-  font-size:1em;
-}
-img.preview {
-  max-width:100%;
-  margin-top:5px;
+  position: fixed;
+  top:50px;
+  right:10px;
+  background:#fff;
   border:1px solid #ccc;
+  padding:10px;
   border-radius:5px;
+  width:250px;
+  box-shadow:0 0 10px rgba(0,0,0,0.3);
+  z-index: 200;
 }
-.send-btn {
-  background:green;
+#configPanel label { font-weight:bold; }
+#configPanel input { width:100%; margin-top:5px; }
+
+/* Interfaz principal */
+#menuPrincipal {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:15px;
+  padding:20px;
+}
+#menuPrincipal button {
+  flex:1 1 45%;
+  padding:20px;
+  font-size:1.2em;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:var(--azul);
   color:#fff;
-  margin-top:15px;
 }
 
-/* Estilo para edad + selector años/meses */
-.edad-container {
-  display:flex;
-  gap:10px;
-  flex-wrap: wrap;
+/* Ventanas flotantes */
+.flotante {
+  display:none;
+  position: fixed;
+  top:50px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:500px;
+  max-height:90%;
+  overflow-y:auto;
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:8px;
+  box-shadow:0 0 15px rgba(0,0,0,0.5);
+  padding:15px;
+  z-index:150;
 }
-.edad-container input, .edad-container select {
-  flex:1;
+.flotante h2 {
+  margin-top:0;
 }
+.flotante .cerrarBtn {
+  position:absolute;
+  top:5px;
+  right:10px;
+  background:red;
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:25px;
+  height:25px;
+  cursor:pointer;
+}
+
+/* Formularios */
+form { display:flex; flex-direction: column; }
+form label { margin-top:10px; margin-bottom:2px; }
+form input, form select, form button { padding:7px; font-size:1em; width:100%; }
+input[type="number"] { -moz-appearance:textfield; }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin:0; }
+textarea { resize:none; padding:7px; font-size:1em; }
+img.preview { max-width:100%; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+.send-btn { background:green; color:#fff; margin-top:15px; }
+
+/* Edad + selector años/meses */
+.edad-container { display:flex; gap:10px; flex-wrap: wrap; }
+.edad-container input, .edad-container select { flex:1; }
 
 /* Responsive */
-@media (max-width:600px){
-  nav button {
-    flex:1 1 100%;
-  }
+@media(max-width:600px){
+  #menuPrincipal button { flex:1 1 100%; }
 }
 </style>
 </head>
@@ -114,15 +136,26 @@ img.preview {
 
 <header>Registro Clínico WhatsApp</header>
 
-<nav>
-  <button onclick="showSection('novedades')">Novedades</button>
-  <button onclick="showSection('retiros')">Retiros</button>
-  <button onclick="showSection('remitidos')">Remitidos</button>
-  <button onclick="showSection('dialisis')">Diálisis</button>
-</nav>
+<!-- Configuración -->
+<button id="configBtn" onclick="toggleConfig()">⚙️ Configuración</button>
+<div id="configPanel">
+  <label>Número de WhatsApp (sin + ni espacios):</label>
+  <input type="text" id="numeroWhatsApp" placeholder="573XXXXXXXXX">
+</div>
 
-<!-- 1) Registro de Novedades -->
-<section id="novedades" class="active">
+<!-- Interfaz Principal -->
+<div id="menuPrincipal">
+  <button onclick="abrirVentana('novedades')">Registro de Novedades</button>
+  <button onclick="abrirVentana('retiros')">Retiros Voluntarios</button>
+  <button onclick="abrirVentana('remitidos')">Pacientes Remitidos</button>
+  <button onclick="abrirVentana('dialisis')">Equipos de Diálisis</button>
+</div>
+
+<!-- Ventanas Flotantes -->
+
+<!-- 1) Novedades -->
+<div id="novedades" class="flotante">
+  <button class="cerrarBtn" onclick="cerrarVentana('novedades')">×</button>
   <h2>Registro de Novedades</h2>
   <form id="formNovedades">
     <label>Registro de:</label>
@@ -130,36 +163,22 @@ img.preview {
       <option>Ingreso</option>
       <option>Salida</option>
     </select>
-
     <label>Fecha:</label>
     <input type="text" name="fecha" readonly>
-
     <label>Hora:</label>
     <input type="text" name="hora" readonly>
-
     <label>Lugar:</label>
     <input type="text" name="lugar" value="kek">
-
     <label>Nombre del paciente:</label>
     <input type="text" name="nombre" value="leo">
-
     <label>Edad:</label>
     <div class="edad-container">
       <input type="number" name="edad" value="58">
-      <select name="unidadEdad">
-        <option>Años</option>
-        <option>Meses</option>
-      </select>
+      <select name="unidadEdad"><option>Años</option><option>Meses</option></select>
     </div>
-
     <label>Documentación:</label>
-    <select name="documentacion">
-      <option>C.C</option>
-      <option>T.I</option>
-      <option>R.C.N</option>
-    </select>
+    <select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
     <input type="number" name="numDoc" placeholder="Número de documento">
-
     <label>Novedad:</label>
     <select name="novedad">
       <option>Persona herida por arma de fuego</option>
@@ -167,226 +186,125 @@ img.preview {
       <option>Persona herida por agresión de la comunidad</option>
       <option>Persona herida por maltrato intrafamiliar</option>
     </select>
-
     <label>Trasladado por:</label>
-    <select name="traslado">
-      <option>Ambulancia</option>
-      <option>Amigos</option>
-      <option>Familiares</option>
-      <option>Policía Nacional</option>
-    </select>
-
+    <select name="traslado"><option>Ambulancia</option><option>Amigos</option><option>Familiares</option><option>Policía Nacional</option></select>
     <button type="button" class="send-btn" onclick="enviarWhatsApp('formNovedades','Registro de Novedades')">Enviar por WhatsApp</button>
   </form>
-</section>
+</div>
 
-<!-- 2) Registro de Retiros Voluntarios -->
-<section id="retiros">
+<!-- 2) Retiros -->
+<div id="retiros" class="flotante">
+  <button class="cerrarBtn" onclick="cerrarVentana('retiros')">×</button>
   <h2>Registro de Retiros Voluntarios</h2>
   <form id="formRetiros">
-    <label>Registro de:</label>
-    <select name="tipoRegistro">
-      <option>Salida Voluntaria</option>
-    </select>
-
-    <label>Fecha:</label>
-    <input type="text" name="fecha" readonly>
-
-    <label>Hora:</label>
-    <input type="text" name="hora" readonly>
-
-    <label>Nombre del paciente:</label>
-    <input type="text" name="nombre" value="gfhrthhtr">
-
-    <label>Documentación:</label>
-    <select name="documentacion">
-      <option>C.C</option>
-      <option>T.I</option>
-      <option>R.C.N</option>
-    </select>
+    <label>Registro de:</label><select name="tipoRegistro"><option>Salida Voluntaria</option></select>
+    <label>Fecha:</label><input type="text" name="fecha" readonly>
+    <label>Hora:</label><input type="text" name="hora" readonly>
+    <label>Nombre del paciente:</label><input type="text" name="nombre" value="gfhrthhtr">
+    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
     <input type="number" name="numDoc" placeholder="Número de documento">
-
     <label>Edad:</label>
-    <div class="edad-container">
-      <input type="number" name="edad" value="58">
-      <select name="unidadEdad">
-        <option>Años</option>
-        <option>Meses</option>
-      </select>
-    </div>
-
-    <label>Novedad:</label>
-    <input type="text" name="novedad">
-
-    <label>Médico de turno:</label>
-    <input type="text" name="medico">
-
+    <div class="edad-container"><input type="number" name="edad" value="58"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
+    <label>Novedad:</label><input type="text" name="novedad">
+    <label>Médico de turno:</label><input type="text" name="medico">
     <button type="button" class="send-btn" onclick="enviarWhatsApp('formRetiros','Registro de Retiros Voluntarios')">Enviar por WhatsApp</button>
   </form>
-</section>
+</div>
 
-<!-- 3) Registro de Pacientes Remitidos -->
-<section id="remitidos">
+<!-- 3) Remitidos -->
+<div id="remitidos" class="flotante">
+  <button class="cerrarBtn" onclick="cerrarVentana('remitidos')">×</button>
   <h2>Registro de Pacientes Remitidos</h2>
   <form id="formRemitidos">
-    <label>Registro de:</label>
-    <select name="tipoRegistro">
-      <option>Ingreso</option>
-      <option>Salida</option>
-    </select>
-
-    <label>Fecha:</label>
-    <input type="text" name="fecha" readonly>
-
-    <label>Hora:</label>
-    <input type="text" name="hora" readonly>
-
-    <label>Nombre del paciente:</label>
-    <input type="text" name="nombre">
-
-    <label>Documentación:</label>
-    <select name="documentacion">
-      <option>C.C</option>
-      <option>T.I</option>
-      <option>R.C.N</option>
-    </select>
+    <label>Registro de:</label><select name="tipoRegistro"><option>Ingreso</option><option>Salida</option></select>
+    <label>Fecha:</label><input type="text" name="fecha" readonly>
+    <label>Hora:</label><input type="text" name="hora" readonly>
+    <label>Nombre del paciente:</label><input type="text" name="nombre">
+    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
     <input type="number" name="numDoc" placeholder="Número de documento">
-
     <label>Edad:</label>
-    <div class="edad-container">
-      <input type="number" name="edad">
-      <select name="unidadEdad">
-        <option>Años</option>
-        <option>Meses</option>
-      </select>
-    </div>
-
-    <label>Personal:</label>
-    <select name="personal">
-      <option>Paramédico</option>
-      <option>Médico</option>
-    </select>
-
-    <label>Ambulancia:</label>
-    <input type="text" name="ambulancia">
-
-    <label>Placa:</label>
-    <input type="text" name="placa">
-
-    <label>Origen/Destino:</label>
-    <select name="origenDestino">
-      <option>Origen</option>
-      <option>Destino</option>
-    </select>
-
+    <div class="edad-container"><input type="number" name="edad"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
+    <label>Personal:</label><select name="personal"><option>Paramédico</option><option>Médico</option></select>
+    <label>Ambulancia:</label><input type="text" name="ambulancia">
+    <label>Placa:</label><input type="text" name="placa">
+    <label>Origen/Destino:</label><select name="origenDestino"><option>Origen</option><option>Destino</option></select>
     <button type="button" class="send-btn" onclick="enviarWhatsApp('formRemitidos','Registro de Pacientes Remitidos')">Enviar por WhatsApp</button>
   </form>
-</section>
+</div>
 
-<!-- 4) Equipos de Diálisis -->
-<section id="dialisis">
+<!-- 4) Diálisis -->
+<div id="dialisis" class="flotante">
+  <button class="cerrarBtn" onclick="cerrarVentana('dialisis')">×</button>
   <h2>Equipos de Diálisis</h2>
   <form id="formDialisis">
-    <label>Registro de:</label>
-    <select name="tipoRegistro">
-      <option>Ingreso</option>
-      <option>Salida</option>
-    </select>
-
-    <label>Fecha:</label>
-    <input type="text" name="fecha" readonly>
-
-    <label>Hora:</label>
-    <input type="text" name="hora" readonly>
-
-    <label>Empresa:</label>
-    <input list="empresas" name="empresa">
-    <datalist id="empresas"></datalist>
-
-    <label>Transportado por:</label>
-    <input type="text" name="transportado">
-
-    <label>Documentación:</label>
-    <select name="documentacion">
-      <option>C.C</option>
-      <option>T.I</option>
-      <option>R.C.N</option>
-    </select>
+    <label>Registro de:</label><select name="tipoRegistro"><option>Ingreso</option><option>Salida</option></select>
+    <label>Fecha:</label><input type="text" name="fecha" readonly>
+    <label>Hora:</label><input type="text" name="hora" readonly>
+    <label>Empresa:</label><input list="empresas" name="empresa"><datalist id="empresas"></datalist>
+    <label>Transportado por:</label><input type="text" name="transportado">
+    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
     <input type="number" name="numDoc" placeholder="Número de documento">
-
     <label>Edad:</label>
-    <div class="edad-container">
-      <input type="number" name="edad">
-      <select name="unidadEdad">
-        <option>Años</option>
-        <option>Meses</option>
-      </select>
-    </div>
-
-    <label>Destino:</label>
-    <input list="destinos" name="destino">
-    <datalist id="destinos"></datalist>
-
+    <div class="edad-container"><input type="number" name="edad"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
+    <label>Destino:</label><input list="destinos" name="destino"><datalist id="destinos"></datalist>
     <label>Evidencia fotográfica:</label>
     <input type="file" accept="image/*" capture="environment" id="fotoDialisis">
     <img id="previewDialisis" class="preview" src="">
-
     <button type="button" class="send-btn" onclick="enviarWhatsApp('formDialisis','Equipos de Diálisis')">Enviar por WhatsApp</button>
   </form>
-</section>
+</div>
 
 <script>
-// Función para cambiar sección
-function showSection(id) {
-  document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// Configuración panel
+function toggleConfig(){
+  const panel = document.getElementById('configPanel');
+  panel.style.display = panel.style.display==='block'?'none':'block';
 }
 
-// Función para auto-fecha y hora
-function setFechaHora() {
-  const now = new Date();
-  const fecha = now.toLocaleDateString('es-CO');
-  const hora = now.toLocaleTimeString('es-CO', {hour: '2-digit', minute:'2-digit'});
-  document.querySelectorAll('input[name="fecha"]').forEach(input=>input.value=fecha);
-  document.querySelectorAll('input[name="hora"]').forEach(input=>input.value=hora);
+// Abrir / Cerrar ventanas flotantes
+function abrirVentana(id){ document.getElementById(id).style.display='block'; }
+function cerrarVentana(id){ document.getElementById(id).style.display='none'; }
+
+// Auto fecha/hora
+function setFechaHora(){
+  const now=new Date();
+  const fecha=now.toLocaleDateString('es-CO');
+  const hora=now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  document.querySelectorAll('input[name="fecha"]').forEach(i=>i.value=fecha);
+  document.querySelectorAll('input[name="hora"]').forEach(i=>i.value=hora);
 }
 setFechaHora();
 setInterval(setFechaHora,60000);
 
-// Preview foto
-document.getElementById('fotoDialisis').addEventListener('change', function(e){
-  const file = e.target.files[0];
-  if(file){
-    document.getElementById('previewDialisis').src = URL.createObjectURL(file);
-  }
+// Preview foto Diálisis
+document.getElementById('fotoDialisis').addEventListener('change',function(e){
+  const file=e.target.files[0];
+  if(file) document.getElementById('previewDialisis').src=URL.createObjectURL(file);
 });
 
-// Función WhatsApp
-function enviarWhatsApp(formId, titulo){
-  const form = document.getElementById(formId);
-  let texto = `*${titulo}*\n`;
+// WhatsApp
+function enviarWhatsApp(formId,titulo){
+  const numero=document.getElementById('numeroWhatsApp').value.trim();
+  if(!numero){ alert('Ingrese el número de WhatsApp en Configuración.'); return; }
+  const form=document.getElementById(formId);
+  let texto=`*${titulo}*\n`;
   Array.from(form.elements).forEach(el=>{
-    if(el.name && el.type !== 'button' && el.type !== 'file'){
-      texto += `*${el.name}:* ${el.value}\n`;
+    if(el.name && el.type!=='button' && el.type!=='file'){
+      texto+=`*${el.name}:* ${el.value}\n`;
     }
   });
-  // Añadir foto si existe
-  const fileInput = form.querySelector('input[type="file"]');
-  if(fileInput && fileInput.files[0]){
-    alert('La foto se debe enviar manualmente por WhatsApp.');
-  }
-  const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+  const url=`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
   window.open(url,'_blank');
 }
 
 // Guardar Empresa/Destino para acceso rápido
-function agregarLista(idInput, idDatalist){
-  const input = document.querySelector(`input[name="${idInput}"]`);
-  const datalist = document.getElementById(idDatalist);
+function agregarLista(idInput,idDatalist){
+  const input=document.querySelector(`input[name="${idInput}"]`);
+  const datalist=document.getElementById(idDatalist);
   input.addEventListener('blur',()=>{
     if(input.value && !Array.from(datalist.options).some(o=>o.value===input.value)){
-      const option = document.createElement('option');
-      option.value = input.value;
+      const option=document.createElement('option');
+      option.value=input.value;
       datalist.appendChild(option);
     }
   });
