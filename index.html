@@ -3,248 +3,396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Registro Rápido</title>
-
+<title>Registro Clínico WhatsApp</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5}
-header{background:#1e3a8a;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center}
-header button{background:#3b82f6;border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
-main{padding:20px;max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
-main button{padding:20px;border:none;border-radius:12px;background:#3b82f6;color:#fff;font-size:16px;cursor:pointer}
+:root {
+  --azul:#0d6efd;
+  --fondo:#f9fafb;
+  --texto:#333;
+  --gris:#ccc;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+header {
+  background: var(--azul);
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.2em;
+  position: sticky;
+  top:0;
+  z-index: 100;
+}
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background: #e9ecef;
+  padding: 5px 0;
+}
+nav button {
+  padding: 8px 12px;
+  margin:2px;
+  border: none;
+  background: var(--azul);
+  color:#fff;
+  border-radius:5px;
+  cursor:pointer;
+  flex:1 1 45%;
+}
+section {
+  display:none;
+  padding:15px;
+}
+section.active {
+  display:block;
+}
+form {
+  display:flex;
+  flex-direction: column;
+}
+form label {
+  margin-top:10px;
+  margin-bottom:2px;
+}
+form input, form select, form button {
+  padding:7px;
+  font-size:1em;
+  width: 100%;
+}
+input[type="number"] {
+  -moz-appearance:textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin:0;
+}
+textarea {
+  resize:none;
+  padding:7px;
+  font-size:1em;
+}
+img.preview {
+  max-width:100%;
+  margin-top:5px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+.send-btn {
+  background:green;
+  color:#fff;
+  margin-top:15px;
+}
 
-/* MODAL */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:1000}
-.modal-content{background:#fff;width:95%;max-width:700px;max-height:90vh;overflow:auto;padding:20px;border-radius:12px;position:relative}
-.close{position:absolute;top:10px;right:10px;background:#ef4444;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer}
+/* Estilo para edad + selector años/meses */
+.edad-container {
+  display:flex;
+  gap:10px;
+  flex-wrap: wrap;
+}
+.edad-container input, .edad-container select {
+  flex:1;
+}
 
-.field{margin-bottom:15px}
-.field label{display:block;margin-bottom:5px;font-weight:bold}
-.field input,.field select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc}
-
-/* DOCUMENTO */
-.doc-grupo{display:flex;gap:6px}
-.doc-grupo select{width:80px;flex-shrink:0}
-.doc-grupo input{flex:1}
-
-.send-btn{background:#10b981;color:#fff;padding:12px;border:none;border-radius:8px;width:100%;cursor:pointer}
-.button-camera{background:#3b82f6;color:#fff;padding:10px;border:none;border-radius:6px;width:100%;cursor:pointer}
-
-.preview-foto{display:none;margin-top:10px;max-width:100%;border-radius:8px;border:1px solid #ccc}
-.aviso-foto{display:none;margin-top:8px;padding:8px;background:#ecfeff;border:1px solid #67e8f9;border-radius:6px;color:#0369a1;font-size:14px}
+/* Responsive */
+@media (max-width:600px){
+  nav button {
+    flex:1 1 100%;
+  }
+}
 </style>
 </head>
-
 <body>
 
-<header>
-<h2>Sistema de Registro Rápido</h2>
-<button onclick="abrirModal('config')">Configuración</button>
-</header>
+<header>Registro Clínico WhatsApp</header>
 
-<main>
-<button onclick="abrirModal('novedades')">Registro de Novedades</button>
-<button onclick="abrirModal('retiros')">Retiros Voluntarios</button>
-<button onclick="abrirModal('remitidos')">Pacientes Remitidos</button>
-<button onclick="abrirModal('dialisis')">Equipos de Diálisis</button>
-</main>
+<nav>
+  <button onclick="showSection('novedades')">Novedades</button>
+  <button onclick="showSection('retiros')">Retiros</button>
+  <button onclick="showSection('remitidos')">Remitidos</button>
+  <button onclick="showSection('dialisis')">Diálisis</button>
+</nav>
 
-<!-- ================= NOVEDADES ================= -->
-<div class="modal" id="novedades"><div class="modal-content">
-<button class="close" onclick="cerrarModal('novedades')">✕</button>
-<h3>Registro de Novedades</h3>
+<!-- 1) Registro de Novedades -->
+<section id="novedades" class="active">
+  <h2>Registro de Novedades</h2>
+  <form id="formNovedades">
+    <label>Registro de:</label>
+    <select name="tipoRegistro">
+      <option>Ingreso</option>
+      <option>Salida</option>
+    </select>
 
-<div class="field"><label>Ingreso / Salida</label>
-<select id="tipoNovedad"><option>Ingreso</option><option>Salida</option></select></div>
+    <label>Fecha:</label>
+    <input type="text" name="fecha" readonly>
 
-<div class="field"><label>Fecha</label><input id="fechaNovedad" readonly></div>
-<div class="field"><label>Hora</label><input id="horaNovedad" readonly></div>
-<div class="field"><label>Lugar</label><input id="lugarNovedad"></div>
-<div class="field"><label>Nombre</label><input id="nombreNovedad"></div>
+    <label>Hora:</label>
+    <input type="text" name="hora" readonly>
 
-<div class="field"><label>Edad</label>
-<input type="number" id="edadNovedad">
-<select id="edadTipoNovedad"><option>Años</option><option>Meses</option></select>
-</div>
+    <label>Lugar:</label>
+    <input type="text" name="lugar" value="kek">
 
-<div class="field"><label>Documentación</label>
-<div class="doc-grupo">
-<select id="docTipoNovedad"><option>C.C</option><option>T.I</option></select>
-<input id="docNumeroNovedad">
-</div></div>
+    <label>Nombre del paciente:</label>
+    <input type="text" name="nombre" value="leo">
 
-<div class="field"><label>Novedad</label><input id="detalleNovedad"></div>
-<div class="field"><label>Trasladado por</label><input id="trasladoNovedad"></div>
+    <label>Edad:</label>
+    <div class="edad-container">
+      <input type="number" name="edad" value="58">
+      <select name="unidadEdad">
+        <option>Años</option>
+        <option>Meses</option>
+      </select>
+    </div>
 
-<button class="send-btn" onclick="enviarWhatsApp('novedades')">Enviar WhatsApp</button>
-</div></div>
+    <label>Documentación:</label>
+    <select name="documentacion">
+      <option>C.C</option>
+      <option>T.I</option>
+      <option>R.C.N</option>
+    </select>
+    <input type="number" name="numDoc" placeholder="Número de documento">
 
-<!-- ================= RETIROS ================= -->
-<div class="modal" id="retiros"><div class="modal-content">
-<button class="close" onclick="cerrarModal('retiros')">✕</button>
-<h3>Retiros Voluntarios</h3>
+    <label>Novedad:</label>
+    <select name="novedad">
+      <option>Persona herida por arma de fuego</option>
+      <option>Persona herida por arma blanca</option>
+      <option>Persona herida por agresión de la comunidad</option>
+      <option>Persona herida por maltrato intrafamiliar</option>
+    </select>
 
-<div class="field"><label>Ingreso / Salida</label>
-<select id="tipoRetiro"><option>Salida voluntaria</option></select></div>
+    <label>Trasladado por:</label>
+    <select name="traslado">
+      <option>Ambulancia</option>
+      <option>Amigos</option>
+      <option>Familiares</option>
+      <option>Policía Nacional</option>
+    </select>
 
-<div class="field"><label>Fecha</label><input id="fechaRetiro" readonly></div>
-<div class="field"><label>Hora</label><input id="horaRetiro" readonly></div>
-<div class="field"><label>Nombre</label><input id="nombreRetiro"></div>
+    <button type="button" class="send-btn" onclick="enviarWhatsApp('formNovedades','Registro de Novedades')">Enviar por WhatsApp</button>
+  </form>
+</section>
 
-<div class="field"><label>Documentación</label>
-<div class="doc-grupo">
-<select id="docTipoRetiro"><option>C.C</option><option>T.I</option></select>
-<input id="docNumeroRetiro">
-</div></div>
+<!-- 2) Registro de Retiros Voluntarios -->
+<section id="retiros">
+  <h2>Registro de Retiros Voluntarios</h2>
+  <form id="formRetiros">
+    <label>Registro de:</label>
+    <select name="tipoRegistro">
+      <option>Salida Voluntaria</option>
+    </select>
 
-<div class="field"><label>Edad</label>
-<input type="number" id="edadRetiro">
-<select id="edadTipoRetiro"><option>Años</option><option>Meses</option></select>
-</div>
+    <label>Fecha:</label>
+    <input type="text" name="fecha" readonly>
 
-<div class="field"><label>Novedad</label><input id="detalleRetiro"></div>
-<div class="field"><label>Médico</label><input id="medicoRetiro"></div>
+    <label>Hora:</label>
+    <input type="text" name="hora" readonly>
 
-<button class="send-btn" onclick="enviarWhatsApp('retiros')">Enviar WhatsApp</button>
-</div></div>
+    <label>Nombre del paciente:</label>
+    <input type="text" name="nombre" value="gfhrthhtr">
 
-<!-- ================= REMITIDOS ================= -->
-<div class="modal" id="remitidos"><div class="modal-content">
-<button class="close" onclick="cerrarModal('remitidos')">✕</button>
-<h3>Pacientes Remitidos</h3>
+    <label>Documentación:</label>
+    <select name="documentacion">
+      <option>C.C</option>
+      <option>T.I</option>
+      <option>R.C.N</option>
+    </select>
+    <input type="number" name="numDoc" placeholder="Número de documento">
 
-<div class="field"><label>Ingreso / Salida</label>
-<select id="tipoRemitido"><option>Ingreso</option><option>Salida</option></select></div>
+    <label>Edad:</label>
+    <div class="edad-container">
+      <input type="number" name="edad" value="58">
+      <select name="unidadEdad">
+        <option>Años</option>
+        <option>Meses</option>
+      </select>
+    </div>
 
-<div class="field"><label>Fecha</label><input id="fechaRemitido" readonly></div>
-<div class="field"><label>Hora</label><input id="horaRemitido" readonly></div>
-<div class="field"><label>Nombre</label><input id="nombreRemitido"></div>
+    <label>Novedad:</label>
+    <input type="text" name="novedad">
 
-<div class="field"><label>Documentación</label>
-<div class="doc-grupo">
-<select id="docTipoRemitido"><option>C.C</option><option>T.I</option></select>
-<input id="docNumeroRemitido">
-</div></div>
+    <label>Médico de turno:</label>
+    <input type="text" name="medico">
 
-<div class="field"><label>Edad</label>
-<input type="number" id="edadRemitido">
-<select id="edadTipoRemitido"><option>Años</option><option>Meses</option></select>
-</div>
+    <button type="button" class="send-btn" onclick="enviarWhatsApp('formRetiros','Registro de Retiros Voluntarios')">Enviar por WhatsApp</button>
+  </form>
+</section>
 
-<div class="field"><label>Profesional</label><input id="profesionalRemitido"></div>
-<div class="field"><label>Ambulancia</label><input id="ambulanciaRemitido"></div>
-<div class="field"><label>Placa</label><input id="placaRemitido"></div>
-<div class="field"><label>Origen / Destino</label><input id="origenDestinoRemitido"></div>
+<!-- 3) Registro de Pacientes Remitidos -->
+<section id="remitidos">
+  <h2>Registro de Pacientes Remitidos</h2>
+  <form id="formRemitidos">
+    <label>Registro de:</label>
+    <select name="tipoRegistro">
+      <option>Ingreso</option>
+      <option>Salida</option>
+    </select>
 
-<button class="send-btn" onclick="enviarWhatsApp('remitidos')">Enviar WhatsApp</button>
-</div></div>
+    <label>Fecha:</label>
+    <input type="text" name="fecha" readonly>
 
-<!-- ================= DIALISIS ================= -->
-<div class="modal" id="dialisis"><div class="modal-content">
-<button class="close" onclick="cerrarModal('dialisis')">✕</button>
-<h3>Equipos de Diálisis</h3>
+    <label>Hora:</label>
+    <input type="text" name="hora" readonly>
 
-<div class="field"><label>Ingreso / Salida</label>
-<select id="tipoDialisis"><option>Ingreso</option><option>Salida</option></select></div>
+    <label>Nombre del paciente:</label>
+    <input type="text" name="nombre">
 
-<div class="field"><label>Fecha</label><input id="fechaDialisis" readonly></div>
-<div class="field"><label>Hora</label><input id="horaDialisis" readonly></div>
-<div class="field"><label>Empresa</label><input id="empresaDialisis"></div>
-<div class="field"><label>Transportado por</label><input id="transportadoDialisis"></div>
+    <label>Documentación:</label>
+    <select name="documentacion">
+      <option>C.C</option>
+      <option>T.I</option>
+      <option>R.C.N</option>
+    </select>
+    <input type="number" name="numDoc" placeholder="Número de documento">
 
-<div class="field"><label>Documentación</label>
-<div class="doc-grupo">
-<select id="docTipoDialisis"><option>C.C</option><option>T.I</option></select>
-<input id="docNumeroDialisis">
-</div></div>
+    <label>Edad:</label>
+    <div class="edad-container">
+      <input type="number" name="edad">
+      <select name="unidadEdad">
+        <option>Años</option>
+        <option>Meses</option>
+      </select>
+    </div>
 
-<div class="field"><label>Destino</label><input id="destinoDialisis"></div>
+    <label>Personal:</label>
+    <select name="personal">
+      <option>Paramédico</option>
+      <option>Médico</option>
+    </select>
 
-<div class="field">
-<label>📸 Evidencia</label>
-<button class="button-camera" onclick="fotoDialisis.click()">📷 Tomar Foto</button>
-<input type="file" id="fotoDialisis" accept="image/*" capture="camera" hidden>
-<img id="previewDialisis" class="preview-foto">
-<div id="avisoFotoDialisis" class="aviso-foto">🔔 Foto lista para adjuntar en WhatsApp</div>
-</div>
+    <label>Ambulancia:</label>
+    <input type="text" name="ambulancia">
 
-<button class="send-btn" onclick="enviarWhatsApp('dialisis')">Enviar WhatsApp</button>
-</div></div>
+    <label>Placa:</label>
+    <input type="text" name="placa">
 
-<!-- CONFIG -->
-<div class="modal" id="config"><div class="modal-content">
-<button class="close" onclick="cerrarModal('config')">✕</button>
-<h3>Configuración</h3>
-<input id="numeroWhatsApp" placeholder="573001234567">
-<button class="send-btn" onclick="guardarNumero()">Guardar</button>
-</div></div>
+    <label>Origen/Destino:</label>
+    <select name="origenDestino">
+      <option>Origen</option>
+      <option>Destino</option>
+    </select>
+
+    <button type="button" class="send-btn" onclick="enviarWhatsApp('formRemitidos','Registro de Pacientes Remitidos')">Enviar por WhatsApp</button>
+  </form>
+</section>
+
+<!-- 4) Equipos de Diálisis -->
+<section id="dialisis">
+  <h2>Equipos de Diálisis</h2>
+  <form id="formDialisis">
+    <label>Registro de:</label>
+    <select name="tipoRegistro">
+      <option>Ingreso</option>
+      <option>Salida</option>
+    </select>
+
+    <label>Fecha:</label>
+    <input type="text" name="fecha" readonly>
+
+    <label>Hora:</label>
+    <input type="text" name="hora" readonly>
+
+    <label>Empresa:</label>
+    <input list="empresas" name="empresa">
+    <datalist id="empresas"></datalist>
+
+    <label>Transportado por:</label>
+    <input type="text" name="transportado">
+
+    <label>Documentación:</label>
+    <select name="documentacion">
+      <option>C.C</option>
+      <option>T.I</option>
+      <option>R.C.N</option>
+    </select>
+    <input type="number" name="numDoc" placeholder="Número de documento">
+
+    <label>Edad:</label>
+    <div class="edad-container">
+      <input type="number" name="edad">
+      <select name="unidadEdad">
+        <option>Años</option>
+        <option>Meses</option>
+      </select>
+    </div>
+
+    <label>Destino:</label>
+    <input list="destinos" name="destino">
+    <datalist id="destinos"></datalist>
+
+    <label>Evidencia fotográfica:</label>
+    <input type="file" accept="image/*" capture="environment" id="fotoDialisis">
+    <img id="previewDialisis" class="preview" src="">
+
+    <button type="button" class="send-btn" onclick="enviarWhatsApp('formDialisis','Equipos de Diálisis')">Enviar por WhatsApp</button>
+  </form>
+</section>
 
 <script>
-function abrirModal(id){document.getElementById(id).style.display='flex'}
-function cerrarModal(id){document.getElementById(id).style.display='none'}
-
-function guardarNumero(){
-localStorage.setItem('whatsapp',numeroWhatsApp.value)
-alert('Número guardado')
-cerrarModal('config')
+// Función para cambiar sección
+function showSection(id) {
+  document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-fotoDialisis.addEventListener('change',e=>{
-const f=e.target.files[0];if(!f)return
-const r=new FileReader()
-r.onload=ev=>{
-previewDialisis.src=ev.target.result
-previewDialisis.style.display='block'
-avisoFotoDialisis.style.display='block'
+// Función para auto-fecha y hora
+function setFechaHora() {
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-CO');
+  const hora = now.toLocaleTimeString('es-CO', {hour: '2-digit', minute:'2-digit'});
+  document.querySelectorAll('input[name="fecha"]').forEach(input=>input.value=fecha);
+  document.querySelectorAll('input[name="hora"]').forEach(input=>input.value=hora);
 }
-r.readAsDataURL(f)
-})
+setFechaHora();
+setInterval(setFechaHora,60000);
 
-function enviarWhatsApp(v){
-const n=localStorage.getItem('whatsapp')
-if(!n){alert('Configure WhatsApp');return}
-let m=''
-if(v==='novedades'){
-m=`📝 Novedades
-${tipoNovedad.value}
-Nombre: ${nombreNovedad.value}
-Edad: ${edadNovedad.value} ${edadTipoNovedad.value}
-Documento: ${docTipoNovedad.value} ${docNumeroNovedad.value}
-Lugar: ${lugarNovedad.value}
-Detalle: ${detalleNovedad.value}
-Traslado: ${trasladoNovedad.value}`
-}
-if(v==='retiros'){
-m=`📝 Retiro Voluntario
-Nombre: ${nombreRetiro.value}
-Documento: ${docTipoRetiro.value} ${docNumeroRetiro.value}
-Médico: ${medicoRetiro.value}`
-}
-if(v==='remitidos'){
-m=`📝 Remitido
-${tipoRemitido.value}
-Nombre: ${nombreRemitido.value}
-Documento: ${docTipoRemitido.value} ${docNumeroRemitido.value}
-Ambulancia: ${ambulanciaRemitido.value}`
-}
-if(v==='dialisis'){
-m=`📝 Diálisis
-${tipoDialisis.value}
-Empresa: ${empresaDialisis.value}
-Documento: ${docTipoDialisis.value} ${docNumeroDialisis.value}
-Destino: ${destinoDialisis.value}
+// Preview foto
+document.getElementById('fotoDialisis').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(file){
+    document.getElementById('previewDialisis').src = URL.createObjectURL(file);
+  }
+});
 
-📸 Foto tomada. Adjuntar manualmente`
-}
-window.open(`https://wa.me/${n}?text=${encodeURIComponent(m)}`)
+// Función WhatsApp
+function enviarWhatsApp(formId, titulo){
+  const form = document.getElementById(formId);
+  let texto = `*${titulo}*\n`;
+  Array.from(form.elements).forEach(el=>{
+    if(el.name && el.type !== 'button' && el.type !== 'file'){
+      texto += `*${el.name}:* ${el.value}\n`;
+    }
+  });
+  // Añadir foto si existe
+  const fileInput = form.querySelector('input[type="file"]');
+  if(fileInput && fileInput.files[0]){
+    alert('La foto se debe enviar manualmente por WhatsApp.');
+  }
+  const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+  window.open(url,'_blank');
 }
 
-(function(){
-const d=new Date(),f=d.toLocaleDateString('es-CO'),h=d.toLocaleTimeString('es-CO')
-;['Novedad','Retiro','Remitido','Dialisis'].forEach(t=>{
-if(document.getElementById('fecha'+t))document.getElementById('fecha'+t).value=f
-if(document.getElementById('hora'+t))document.getElementById('hora'+t).value=h
-})
-})()
+// Guardar Empresa/Destino para acceso rápido
+function agregarLista(idInput, idDatalist){
+  const input = document.querySelector(`input[name="${idInput}"]`);
+  const datalist = document.getElementById(idDatalist);
+  input.addEventListener('blur',()=>{
+    if(input.value && !Array.from(datalist.options).some(o=>o.value===input.value)){
+      const option = document.createElement('option');
+      option.value = input.value;
+      datalist.appendChild(option);
+    }
+  });
+}
+agregarLista('empresa','empresas');
+agregarLista('destino','destinos');
 </script>
 
 </body>
