@@ -3,255 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NoveClinic FINAL V7</title>
+<title>NoveClinic FINAL V9</title>
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8}
-header{background:#0b5ed7;color:#fff;padding:12px;text-align:center;font-size:18px}
-nav{display:flex;gap:6px;padding:8px;background:#e9ecef;flex-wrap:wrap;justify-content:center}
-nav button{padding:8px 12px;border:none;border-radius:6px;background:#0b5ed7;color:white;cursor:pointer}
-nav button.secondary{background:#6c757d}
+body{font-family:Arial;margin:0;background:#f4f6f8}
+header{background:#0b5ed7;color:#fff;padding:12px;text-align:center}
+nav{display:flex;gap:6px;padding:8px;background:#e9ecef;flex-wrap:wrap}
+nav button{padding:8px 12px;border:none;border-radius:6px;background:#0b5ed7;color:#fff;cursor:pointer}
+nav .secondary{background:#6c757d}
 section{display:none;padding:10px}
 section.active{display:block}
+.card{background:#fff;border-radius:8px;padding:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .field{margin-bottom:10px}
-.field label{font-weight:bold;display:block;margin-bottom:4px}
-.field input,.field select,.field textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:16px}
-textarea{resize:vertical}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.actions button{flex:1;padding:10px;border:none;border-radius:6px;font-size:15px;cursor:pointer}
+.field label{font-weight:bold;display:block}
+.field input,.field select,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc}
+.actions{display:flex;gap:6px}
+.actions button{flex:1;padding:8px;border:none;border-radius:6px}
 .send{background:#25d366;color:#fff}
-.save{background:#0b5ed7;color:#fff}
 .clear{background:#dc3545;color:#fff}
-.card{background:#fff;border-radius:8px;padding:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.hidden{display:none}
-#previewModal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;z-index:9999;width:90%;max-width:500px;padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
-#previewModal textarea{height:180px;width:100%;margin-bottom:10px;}
+.save{background:#0b5ed7;color:#fff}
 </style>
 </head>
 
 <body>
 
-<header>NoveClinic – Registro Inteligente</header>
+<header>NoveClinic – Sistema Escalable</header>
 
-<nav id="mainNav">
-<button onclick="openWin('base')">🧩 Ventana Base</button>
-<button class="secondary" onclick="openWin('config')">⚙️ Configuración</button>
-</nav>
+<nav id="mainNav"></nav>
 
-<!-- ================= VENTANA BASE ================= -->
-<section id="base" class="active">
-<div class="card">
-<h3>Ventana Base</h3>
-
-<div class="field">
-<label>📅 Fecha y hora</label>
-<input id="base_fecha" readonly>
-</div>
-
-<!-- CAMPOS FIJOS -->
-<div class="field">
-<label>👤 Nombre</label>
-<input id="base_nombre">
-</div>
-
-<div class="field">
-<label>🆔 Documento</label>
-<input id="base_doc" inputmode="numeric">
-</div>
-
-<!-- ETIQUETAS DINÁMICAS -->
-<div id="custom_base"></div>
-
-<div class="actions">
-<button class="send" onclick="previewWhatsApp('base')">📤 WhatsApp</button>
-<button class="clear" onclick="clearForm('base')">🧹 Limpiar</button>
-</div>
-</div>
-</section>
-
-<!-- ================= CONFIG ================= -->
 <section id="config">
 <div class="card">
-<h3>Configuración</h3>
+<h3>⚙️ Configuración</h3>
 
-<h4>➕ Crear nueva ventana (clonar)</h4>
-<div class="field">
-<input id="new_win_name" placeholder="Nombre de la ventana">
-</div>
-<button class="save" onclick="cloneWindow()">➕ Crear ventana</button>
+<h4>➕ Crear ventana</h4>
+<input id="newWinName" placeholder="Nombre">
+<button class="save" onclick="createWindow()">Crear</button>
 
 <hr>
 
-<h4>➕ Etiquetas personalizadas</h4>
-<div class="field"><input id="lbl_name" placeholder="Nombre etiqueta"></div>
-<div class="field">
-<select id="lbl_type">
+<h4>✏️ Renombrar ventanas</h4>
+<div id="renameManager"></div>
+
+<hr>
+
+<h4>➕ Campo fijo</h4>
+<input id="ff_name" placeholder="Nombre campo">
+<select id="ff_type">
 <option value="text">Texto</option>
-<option value="number">Numérico</option>
-<option value="select">Desplegable</option>
+<option value="number">Número</option>
 </select>
-</div>
-<div class="field"><input id="lbl_values" placeholder="Valores separados por coma"></div>
-<div class="field">
-<label><input type="checkbox" id="lbl_base" checked> Ventana Base</label>
-</div>
-<button class="save" onclick="addLabel()">Guardar etiqueta</button>
-
-<hr>
-<h4>🛠️ Administrar etiquetas</h4>
-<div id="label_manager"></div>
-
+<div id="ff_windows"></div>
+<button class="save" onclick="addFixedField()">Guardar campo</button>
 </div>
 </section>
 
-<!-- ================= PREVIEW ================= -->
-<div id="previewModal" class="hidden">
-<h3>Resumen WhatsApp</h3>
-<textarea id="preview_text"></textarea>
-<div class="actions">
-<button class="send" onclick="sendWA()">Enviar</button>
-<button onclick="closePreview()">Cancelar</button>
-</div>
+<div id="preview" style="display:none" class="card">
+<textarea id="previewTxt"></textarea>
+<button onclick="sendWA()">Enviar</button>
 </div>
 
 <script>
-/* ===== UTIL ===== */
-function now(){return new Date().toLocaleString("es-CO")}
+/* ===== STORAGE ===== */
 function get(k){return JSON.parse(localStorage.getItem(k)||"{}")}
 function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
 
-document.getElementById("base_fecha").value = now();
+let structure = get("structure");
+if(!structure.windows){
+ structure={
+  windows:{
+   base:{name:"Ventana Base",fixedFields:[]}
+  }
+ };
+ set("structure",structure);
+}
 
+/* ===== INIT ===== */
+function init(){
+ document.getElementById("mainNav").innerHTML="";
+ Object.entries(structure.windows).forEach(([id,w])=>{
+  createSection(id,w.name,false);
+ });
+ addConfigBtn();
+ renderRename();
+}
+init();
+
+/* ===== UI ===== */
+function addConfigBtn(){
+ const b=document.createElement("button");
+ b.textContent="⚙️ Configuración";
+ b.className="secondary";
+ b.onclick=()=>openWin("config");
+ mainNav.appendChild(b);
+}
 function openWin(id){
  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
  document.getElementById(id).classList.add("active");
- renderCustomLabels();
 }
 
-/* ===== CLONAR VENTANA ===== */
-function cloneWindow(){
- const name = new_win_name.value.trim();
- if(!name) return alert("Nombre requerido");
+/* ===== WINDOWS ===== */
+function createWindow(){
+ const n=newWinName.value.trim();
+ if(!n) return;
+ const id="win_"+Date.now();
+ structure.windows[id]={name:n,fixedFields:[]};
+ set("structure",structure);
+ createSection(id,n,true);
+ newWinName.value="";
+ renderRename();
+}
+function createSection(id,name,open){
+ const b=document.createElement("button");
+ b.textContent=name;
+ b.onclick=()=>openWin(id);
+ mainNav.appendChild(b);
 
- const id = "win_"+Date.now();
+ const s=document.createElement("section");
+ s.id=id;
+ s.innerHTML=`<div class="card"><h3>${name}</h3><div id="fixed_${id}"></div></div>`;
+ document.body.insertBefore(s,document.getElementById("config"));
 
- // Botón
- const btn = document.createElement("button");
- btn.textContent = "🧩 "+name;
- btn.onclick = ()=>openWin(id);
- document.getElementById("mainNav").insertBefore(btn, document.querySelector(".secondary"));
-
- // Sección
- const base = document.getElementById("base");
- const clone = base.cloneNode(true);
- clone.id = id;
- clone.querySelector("h3").textContent = name;
- clone.querySelectorAll("[id]").forEach(e=>{
-  e.id = e.id.replace("base", id);
- });
- document.body.insertBefore(clone, document.getElementById("config"));
-
- document.getElementById(id+"_fecha").value = now();
- new_win_name.value="";
- alert("Ventana creada");
+ renderFixedFields(id);
+ if(open) openWin(id);
 }
 
-/* ===== ETIQUETAS ===== */
-function addLabel(){
- const labels=get("labels");
- const id="lbl_"+Date.now();
- labels[id]={
-  name:lbl_name.value,
-  type:lbl_type.value,
-  values:lbl_values.value.split(",").map(v=>v.trim()).filter(v=>v),
-  windows:{base:lbl_base.checked}
- };
- set("labels",labels);
- lbl_name.value=""; lbl_values.value="";
- renderCustomLabels(); renderLabelManager();
-}
-
-function renderCustomLabels(){
- const labels=get("labels");
- document.querySelectorAll("[id^='custom_']").forEach(cont=>{
-  cont.innerHTML="";
-  const win = cont.id.replace("custom_","");
-  Object.values(labels).forEach(l=>{
-   if(l.windows[win]){
-    const d=document.createElement("div");
-    d.className="field";
-    d.innerHTML="<label>"+l.name+"</label>";
-    let el;
-    if(l.type==="select"){
-     el=document.createElement("select");
-     l.values.forEach(v=>el.add(new Option(v,v)));
-    }else{
-     el=document.createElement("input");
-     if(l.type==="number") el.inputMode="numeric";
-    }
-    d.appendChild(el);
-    cont.appendChild(d);
-   }
-  });
- });
-}
-
-/* ===== WHATSAPP ===== */
-function previewWhatsApp(win){
- let txt="";
- document.querySelectorAll("#"+win+" input,#"+win+" textarea,#custom_"+win+" input,#custom_"+win+" select")
- .forEach(e=>{if(e.value) txt+=e.previousSibling.textContent+": "+e.value+"\n"});
- preview_text.value=txt;
- previewModal.classList.remove("hidden");
-}
-function sendWA(){
- window.open("https://wa.me/?text="+encodeURIComponent(preview_text.value));
- closePreview();
-}
-function closePreview(){previewModal.classList.add("hidden")}
-
-/* ===== LIMPIAR ===== */
-function clearForm(win){
- document.querySelectorAll("#"+win+" input:not([readonly]),#"+win+" textarea")
- .forEach(e=>e.value="");
- renderCustomLabels();
-}
-
-/* ===== EDITAR / DUPLICAR ETIQUETAS ===== */
-function renderLabelManager(){
- const cont=label_manager;
+/* ===== FIXED FIELDS ===== */
+function renderFixedFields(win){
+ const cont=document.getElementById("fixed_"+win);
  cont.innerHTML="";
- const labels=get("labels");
- Object.entries(labels).forEach(([id,l])=>{
-  const c=document.createElement("div");
-  c.className="card";
-  c.innerHTML=`
-   <input id="n_${id}" value="${l.name}">
-   <button onclick="saveLabel('${id}')">💾</button>
-   <button onclick="dupLabel('${id}')">📑</button>
-   <button onclick="delLabel('${id}')">🗑️</button>`;
-  cont.appendChild(c);
+ structure.windows[win].fixedFields.forEach(f=>{
+  const d=document.createElement("div");
+  d.className="field";
+  d.innerHTML=`<label>${f.name}</label><input type="${f.type}">`;
+  cont.appendChild(d);
  });
 }
-function saveLabel(id){
- const labels=get("labels");
- labels[id].name=document.getElementById("n_"+id).value;
- set("labels",labels);
- renderCustomLabels(); renderLabelManager();
+function addFixedField(){
+ const name=ff_name.value;
+ if(!name) return;
+ document.querySelectorAll("#ff_windows input:checked").forEach(ch=>{
+  structure.windows[ch.value].fixedFields.push({name:name,type:ff_type.value});
+  renderFixedFields(ch.value);
+ });
+ set("structure",structure);
+ ff_name.value="";
 }
-function dupLabel(id){
- const labels=get("labels");
- const n="lbl_"+Date.now();
- labels[n]=JSON.parse(JSON.stringify(labels[id]));
- labels[n].name+=" (copia)";
- set("labels",labels);
- renderLabelManager();
+
+/* ===== RENAME ===== */
+function renderRename(){
+ const c=document.getElementById("renameManager");
+ c.innerHTML="";
+ Object.entries(structure.windows).forEach(([id,w])=>{
+  if(id==="base") return;
+  c.innerHTML+=`
+   <div class="field">
+    <input value="${w.name}" onchange="renameWin('${id}',this.value)">
+   </div>`;
+ });
 }
-function delLabel(id){
- const labels=get("labels");
- delete labels[id];
- set("labels",labels);
- renderCustomLabels(); renderLabelManager();
+function renameWin(id,val){
+ structure.windows[id].name=val;
+ set("structure",structure);
+ init();
 }
+
+/* ===== FIELD WINDOW SELECT ===== */
+function renderFFWindows(){
+ ff_windows.innerHTML="";
+ Object.keys(structure.windows).forEach(id=>{
+  ff_windows.innerHTML+=`
+   <label><input type="checkbox" value="${id}"> ${structure.windows[id].name}</label><br>`;
+ });
+}
+renderFFWindows();
 </script>
 
 </body>
