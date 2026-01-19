@@ -3,314 +3,341 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Clínico WhatsApp - Interfaz Principal</title>
+<title>NoveClinic FINAL</title>
+
 <style>
-:root {
-  --azul:#0d6efd;
-  --fondo:#f9fafb;
-  --texto:#333;
-  --gris:#ccc;
+body{
+ font-family:Arial,Helvetica,sans-serif;
+ margin:0;
+ background:#f4f6f8;
 }
-* { box-sizing: border-box; }
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background: var(--fondo);
-  color: var(--texto);
+header{
+ background:#0b5ed7;
+ color:#fff;
+ padding:12px;
+ text-align:center;
+ font-size:18px;
 }
-
-/* Header y configuración */
-header {
-  background: var(--azul);
-  color:#fff;
-  padding:10px;
-  text-align:center;
-  font-size:1.3em;
-  position: sticky;
-  top:0;
-  z-index:100;
+nav{
+ display:flex;
+ gap:6px;
+ padding:8px;
+ background:#e9ecef;
+ flex-wrap:wrap;
+ justify-content:center;
 }
-#configBtn {
-  position: fixed;
-  top:10px;
-  right:10px;
-  background:#ffc107;
-  border:none;
-  color:#000;
-  padding:8px 12px;
-  border-radius:5px;
-  cursor:pointer;
-  z-index:200;
+nav button{
+ padding:8px 12px;
+ border:none;
+ border-radius:6px;
+ background:#0b5ed7;
+ color:white;
+ cursor:pointer;
 }
-#configPanel {
-  display:none;
-  position: fixed;
-  top:50px;
-  right:10px;
-  background:#fff;
-  border:1px solid #ccc;
-  padding:10px;
-  border-radius:5px;
-  width:250px;
-  box-shadow:0 0 10px rgba(0,0,0,0.3);
-  z-index: 200;
+nav button.secondary{
+ background:#6c757d;
 }
-#configPanel label { font-weight:bold; }
-#configPanel input { width:100%; margin-top:5px; }
-
-/* Interfaz principal */
-#menuPrincipal {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:15px;
-  padding:20px;
+section{
+ display:none;
+ padding:10px;
 }
-#menuPrincipal button {
-  flex:1 1 45%;
-  padding:20px;
-  font-size:1.2em;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  background:var(--azul);
-  color:#fff;
+section.active{
+ display:block;
 }
-
-/* Ventanas flotantes */
-.flotante {
-  display:none;
-  position: fixed;
-  top:50px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  max-width:500px;
-  max-height:90%;
-  overflow-y:auto;
-  background:#fff;
-  border:1px solid #ccc;
-  border-radius:8px;
-  box-shadow:0 0 15px rgba(0,0,0,0.5);
-  padding:15px;
-  z-index:150;
+.field{
+ margin-bottom:10px;
 }
-.flotante h2 {
-  margin-top:0;
+.field label{
+ font-weight:bold;
+ display:block;
+ margin-bottom:4px;
 }
-.flotante .cerrarBtn {
-  position:absolute;
-  top:5px;
-  right:10px;
-  background:red;
-  color:#fff;
-  border:none;
-  border-radius:50%;
-  width:25px;
-  height:25px;
-  cursor:pointer;
+.field input, .field select, .field textarea{
+ width:100%;
+ padding:8px;
+ border-radius:6px;
+ border:1px solid #ccc;
+ font-size:16px;
 }
-
-/* Formularios */
-form { display:flex; flex-direction: column; }
-form label { margin-top:10px; margin-bottom:2px; }
-form input, form select, form button { padding:7px; font-size:1em; width:100%; }
-input[type="number"] { -moz-appearance:textfield; }
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button { -webkit-appearance: none; margin:0; }
-textarea { resize:none; padding:7px; font-size:1em; }
-img.preview { max-width:100%; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
-.send-btn { background:green; color:#fff; margin-top:15px; }
-
-/* Edad + selector años/meses */
-.edad-container { display:flex; gap:10px; flex-wrap: wrap; }
-.edad-container input, .edad-container select { flex:1; }
-
-/* Responsive */
-@media(max-width:600px){
-  #menuPrincipal button { flex:1 1 100%; }
+textarea{ resize:vertical }
+.small{
+ font-size:12px;
+ color:#555;
 }
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+.actions button{
+ flex:1;
+ padding:10px;
+ border:none;
+ border-radius:6px;
+ font-size:15px;
+ cursor:pointer;
+}
+.send{ background:#25d366;color:#fff }
+.save{ background:#0b5ed7;color:#fff }
+.clear{ background:#dc3545;color:#fff }
+.card{
+ background:#fff;
+ border-radius:8px;
+ padding:10px;
+ margin-bottom:10px;
+ box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+.hidden{display:none}
 </style>
 </head>
+
 <body>
 
-<header>Registro Clínico WhatsApp</header>
+<header>NoveClinic – Registro Inteligente</header>
 
-<!-- Configuración -->
-<button id="configBtn" onclick="toggleConfig()">⚙️ Configuración</button>
-<div id="configPanel">
-  <label>Número de WhatsApp (sin + ni espacios):</label>
-  <input type="text" id="numeroWhatsApp" placeholder="573XXXXXXXXX">
+<nav>
+<button onclick="openWin('novedad')">📝 Novedad</button>
+<button onclick="openWin('ingreso')">⬅️ Ingreso</button>
+<button onclick="openWin('salida')">➡️ Salida</button>
+<button onclick="openWin('plantillas')">📂 Plantillas</button>
+<button class="secondary" onclick="openWin('config')">⚙️ Configuración</button>
+</nav>
+
+<!-- ================= NOVEDAD ================= -->
+<section id="novedad" class="active">
+<div class="card">
+<h3>Registro de Novedad</h3>
+
+<div class="field">
+<label>📅 Fecha y hora</label>
+<input id="nov_fecha" readonly>
 </div>
 
-<!-- Interfaz Principal -->
-<div id="menuPrincipal">
-  <button onclick="abrirVentana('novedades')">Registro de Novedades</button>
-  <button onclick="abrirVentana('retiros')">Retiros Voluntarios</button>
-  <button onclick="abrirVentana('remitidos')">Pacientes Remitidos</button>
-  <button onclick="abrirVentana('dialisis')">Equipos de Diálisis</button>
+<div class="field">
+<label>📍 Lugar</label>
+<input list="lugares" id="nov_lugar">
+<datalist id="lugares"></datalist>
 </div>
 
-<!-- Ventanas Flotantes -->
-
-<!-- 1) Novedades -->
-<div id="novedades" class="flotante">
-  <button class="cerrarBtn" onclick="cerrarVentana('novedades')">×</button>
-  <h2>Registro de Novedades</h2>
-  <form id="formNovedades">
-    <label>Registro de:</label>
-    <select name="tipoRegistro">
-      <option>Ingreso</option>
-      <option>Salida</option>
-    </select>
-    <label>Fecha:</label>
-    <input type="text" name="fecha" readonly>
-    <label>Hora:</label>
-    <input type="text" name="hora" readonly>
-    <label>Lugar:</label>
-    <input type="text" name="lugar" value="kek">
-    <label>Nombre del paciente:</label>
-    <input type="text" name="nombre" value="leo">
-    <label>Edad:</label>
-    <div class="edad-container">
-      <input type="number" name="edad" value="58">
-      <select name="unidadEdad"><option>Años</option><option>Meses</option></select>
-    </div>
-    <label>Documentación:</label>
-    <select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
-    <input type="number" name="numDoc" placeholder="Número de documento">
-    <label>Novedad:</label>
-    <select name="novedad">
-      <option>Persona herida por arma de fuego</option>
-      <option>Persona herida por arma blanca</option>
-      <option>Persona herida por agresión de la comunidad</option>
-      <option>Persona herida por maltrato intrafamiliar</option>
-    </select>
-    <label>Trasladado por:</label>
-    <select name="traslado"><option>Ambulancia</option><option>Amigos</option><option>Familiares</option><option>Policía Nacional</option></select>
-    <button type="button" class="send-btn" onclick="enviarWhatsApp('formNovedades','Registro de Novedades')">Enviar por WhatsApp</button>
-  </form>
+<div class="field">
+<label>👤 Nombre</label>
+<input id="nov_nombre">
 </div>
 
-<!-- 2) Retiros -->
-<div id="retiros" class="flotante">
-  <button class="cerrarBtn" onclick="cerrarVentana('retiros')">×</button>
-  <h2>Registro de Retiros Voluntarios</h2>
-  <form id="formRetiros">
-    <label>Registro de:</label><select name="tipoRegistro"><option>Salida Voluntaria</option></select>
-    <label>Fecha:</label><input type="text" name="fecha" readonly>
-    <label>Hora:</label><input type="text" name="hora" readonly>
-    <label>Nombre del paciente:</label><input type="text" name="nombre" value="gfhrthhtr">
-    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
-    <input type="number" name="numDoc" placeholder="Número de documento">
-    <label>Edad:</label>
-    <div class="edad-container"><input type="number" name="edad" value="58"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
-    <label>Novedad:</label><input type="text" name="novedad">
-    <label>Médico de turno:</label><input type="text" name="medico">
-    <button type="button" class="send-btn" onclick="enviarWhatsApp('formRetiros','Registro de Retiros Voluntarios')">Enviar por WhatsApp</button>
-  </form>
+<div class="field">
+<label>🆔 Tipo documento</label>
+<select id="nov_tipo">
+<option>CC</option>
+<option>TI</option>
+<option>RC</option>
+<option>PPT</option>
+</select>
 </div>
 
-<!-- 3) Remitidos -->
-<div id="remitidos" class="flotante">
-  <button class="cerrarBtn" onclick="cerrarVentana('remitidos')">×</button>
-  <h2>Registro de Pacientes Remitidos</h2>
-  <form id="formRemitidos">
-    <label>Registro de:</label><select name="tipoRegistro"><option>Ingreso</option><option>Salida</option></select>
-    <label>Fecha:</label><input type="text" name="fecha" readonly>
-    <label>Hora:</label><input type="text" name="hora" readonly>
-    <label>Nombre del paciente:</label><input type="text" name="nombre">
-    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
-    <input type="number" name="numDoc" placeholder="Número de documento">
-    <label>Edad:</label>
-    <div class="edad-container"><input type="number" name="edad"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
-    <label>Personal:</label><select name="personal"><option>Paramédico</option><option>Médico</option></select>
-    <label>Ambulancia:</label><input type="text" name="ambulancia">
-    <label>Placa:</label><input type="text" name="placa">
-    <label>Origen/Destino:</label><select name="origenDestino"><option>Origen</option><option>Destino</option></select>
-    <button type="button" class="send-btn" onclick="enviarWhatsApp('formRemitidos','Registro de Pacientes Remitidos')">Enviar por WhatsApp</button>
-  </form>
+<div class="field">
+<label>🆔 Número</label>
+<input id="nov_doc" inputmode="numeric">
 </div>
 
-<!-- 4) Diálisis -->
-<div id="dialisis" class="flotante">
-  <button class="cerrarBtn" onclick="cerrarVentana('dialisis')">×</button>
-  <h2>Equipos de Diálisis</h2>
-  <form id="formDialisis">
-    <label>Registro de:</label><select name="tipoRegistro"><option>Ingreso</option><option>Salida</option></select>
-    <label>Fecha:</label><input type="text" name="fecha" readonly>
-    <label>Hora:</label><input type="text" name="hora" readonly>
-    <label>Empresa:</label><input list="empresas" name="empresa"><datalist id="empresas"></datalist>
-    <label>Transportado por:</label><input type="text" name="transportado">
-    <label>Documentación:</label><select name="documentacion"><option>C.C</option><option>T.I</option><option>R.C.N</option></select>
-    <input type="number" name="numDoc" placeholder="Número de documento">
-    <label>Edad:</label>
-    <div class="edad-container"><input type="number" name="edad"><select name="unidadEdad"><option>Años</option><option>Meses</option></select></div>
-    <label>Destino:</label><input list="destinos" name="destino"><datalist id="destinos"></datalist>
-    <label>Evidencia fotográfica:</label>
-    <input type="file" accept="image/*" capture="environment" id="fotoDialisis">
-    <img id="previewDialisis" class="preview" src="">
-    <button type="button" class="send-btn" onclick="enviarWhatsApp('formDialisis','Equipos de Diálisis')">Enviar por WhatsApp</button>
-  </form>
+<div class="field">
+<label>📋 Novedad</label>
+<textarea id="nov_texto"></textarea>
+</div>
+
+<div id="custom_novedad"></div>
+
+<div class="actions">
+<button class="send" onclick="previewWhatsApp('novedad')">📤 WhatsApp</button>
+<button class="save" onclick="saveTemplate()">⭐ Guardar plantilla</button>
+<button class="clear" onclick="clearForm('novedad')">🧹 Limpiar</button>
+</div>
+</div>
+</section>
+
+<!-- ================= INGRESO ================= -->
+<section id="ingreso">
+<div class="card">
+<h3>Ingreso</h3>
+<div id="custom_ingreso"></div>
+<button class="send" onclick="previewWhatsApp('ingreso')">📤 WhatsApp</button>
+</div>
+</section>
+
+<!-- ================= SALIDA ================= -->
+<section id="salida">
+<div class="card">
+<h3>Salida</h3>
+<div id="custom_salida"></div>
+<button class="send" onclick="previewWhatsApp('salida')">📤 WhatsApp</button>
+</div>
+</section>
+
+<!-- ================= PLANTILLAS ================= -->
+<section id="plantillas">
+<div class="card">
+<h3>Plantillas guardadas</h3>
+<div id="tpl_list"></div>
+</div>
+</section>
+
+<!-- ================= CONFIG ================= -->
+<section id="config">
+<div class="card">
+<h3>Configuración</h3>
+
+<h4>➕ Etiquetas personalizadas</h4>
+<div class="field"><input id="lbl_name" placeholder="Etiqueta (ej: 🚑 Trasladado por)"></div>
+<div class="field">
+<select id="lbl_type">
+<option value="text">Texto</option>
+<option value="number">Numérico</option>
+<option value="select">Desplegable</option>
+</select>
+</div>
+<div class="field"><input id="lbl_values" placeholder="Valores separados por coma"></div>
+<div class="field">
+<label><input type="checkbox" id="lbl_nov" checked> Novedad</label>
+<label><input type="checkbox" id="lbl_ing"> Ingreso</label>
+<label><input type="checkbox" id="lbl_sal"> Salida</label>
+</div>
+<button class="save" onclick="addLabel()">Guardar etiqueta</button>
+
+<hr>
+
+<h4>🧠 Aprendizaje</h4>
+<button onclick="resetLearning()">Borrar aprendizaje</button>
+
+</div>
+</section>
+
+<!-- ================= RESUMEN ================= -->
+<div id="preview" class="card hidden">
+<h3>Resumen WhatsApp</h3>
+<textarea id="preview_text" style="height:200px"></textarea>
+<div class="actions">
+<button class="send" onclick="sendWA()">Enviar</button>
+<button onclick="closePreview()">Cancelar</button>
+</div>
 </div>
 
 <script>
-// Configuración panel
-function toggleConfig(){
-  const panel = document.getElementById('configPanel');
-  panel.style.display = panel.style.display==='block'?'none':'block';
+/* ====== UTIL ====== */
+function openWin(id){
+ document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(id==="plantillas") loadTemplates();
 }
 
-// Abrir / Cerrar ventanas flotantes
-function abrirVentana(id){ document.getElementById(id).style.display='block'; }
-function cerrarVentana(id){ document.getElementById(id).style.display='none'; }
-
-// Auto fecha/hora
-function setFechaHora(){
-  const now=new Date();
-  const fecha=now.toLocaleDateString('es-CO');
-  const hora=now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
-  document.querySelectorAll('input[name="fecha"]').forEach(i=>i.value=fecha);
-  document.querySelectorAll('input[name="hora"]').forEach(i=>i.value=hora);
+/* ====== FECHA ====== */
+function now(){
+ return new Date().toLocaleString("es-CO");
 }
-setFechaHora();
-setInterval(setFechaHora,60000);
+document.getElementById("nov_fecha").value=now();
 
-// Preview foto Diálisis
-document.getElementById('fotoDialisis').addEventListener('change',function(e){
-  const file=e.target.files[0];
-  if(file) document.getElementById('previewDialisis').src=URL.createObjectURL(file);
-});
+/* ====== STORAGE ====== */
+function get(k){return JSON.parse(localStorage.getItem(k)||"{}")}
+function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
 
-// WhatsApp
-function enviarWhatsApp(formId,titulo){
-  const numero=document.getElementById('numeroWhatsApp').value.trim();
-  if(!numero){ alert('Ingrese el número de WhatsApp en Configuración.'); return; }
-  const form=document.getElementById(formId);
-  let texto=`*${titulo}*\n`;
-  Array.from(form.elements).forEach(el=>{
-    if(el.name && el.type!=='button' && el.type!=='file'){
-      texto+=`*${el.name}:* ${el.value}\n`;
+/* ====== ETIQUETAS ====== */
+function addLabel(){
+ const labels=get("labels");
+ const id="lbl_"+Date.now();
+ labels[id]={
+  name:lbl_name.value,
+  type:lbl_type.value,
+  values:lbl_values.value.split(",").map(v=>v.trim()).filter(v=>v),
+  windows:{
+   nov:lbl_nov.checked,
+   ing:lbl_ing.checked,
+   sal:lbl_sal.checked
+  }
+ };
+ set("labels",labels);
+ lbl_name.value="";lbl_values.value="";
+ renderLabels();
+ alert("Etiqueta guardada");
+}
+
+function renderLabels(){
+ ["novedad","ingreso","salida"].forEach(w=>{
+  const cont=document.getElementById("custom_"+w);
+  if(!cont) return;
+  cont.innerHTML="";
+  const labels=get("labels");
+  Object.values(labels).forEach(l=>{
+   if((w==="novedad"&&l.windows.nov)||(w==="ingreso"&&l.windows.ing)||(w==="salida"&&l.windows.sal)){
+    const div=document.createElement("div");
+    div.className="field";
+    div.innerHTML="<label>"+l.name+"</label>";
+    if(l.type==="select"){
+     const sel=document.createElement("select");
+     l.values.forEach(v=>{
+      const o=document.createElement("option");o.text=v;sel.add(o);
+     });
+     div.appendChild(sel);
+    }else{
+     const inp=document.createElement("input");
+     if(l.type==="number") inp.inputMode="numeric";
+     div.appendChild(inp);
     }
+    cont.appendChild(div);
+   }
   });
-  const url=`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
-  window.open(url,'_blank');
+ });
+}
+renderLabels();
+
+/* ====== WHATSAPP ====== */
+let currentText="";
+function previewWhatsApp(win){
+ let txt="";
+ if(win==="novedad"){
+  if(nov_fecha.value) txt+="📅 "+nov_fecha.value+"\n";
+  if(nov_lugar.value) txt+="📍 "+nov_lugar.value+"\n";
+  if(nov_nombre.value) txt+="👤 "+nov_nombre.value+"\n";
+  if(nov_doc.value) txt+="🆔 "+nov_tipo.value+" "+nov_doc.value+"\n";
+  if(nov_texto.value) txt+="📋 "+nov_texto.value+"\n";
+ }
+ document.getElementById("preview_text").value=txt;
+ currentText=txt;
+ document.getElementById("preview").classList.remove("hidden");
 }
 
-// Guardar Empresa/Destino para acceso rápido
-function agregarLista(idInput,idDatalist){
-  const input=document.querySelector(`input[name="${idInput}"]`);
-  const datalist=document.getElementById(idDatalist);
-  input.addEventListener('blur',()=>{
-    if(input.value && !Array.from(datalist.options).some(o=>o.value===input.value)){
-      const option=document.createElement('option');
-      option.value=input.value;
-      datalist.appendChild(option);
-    }
-  });
+function sendWA(){
+ const t=encodeURIComponent(preview_text.value);
+ window.open("https://wa.me/?text="+t,"_blank");
+ closePreview();
 }
-agregarLista('empresa','empresas');
-agregarLista('destino','destinos');
+
+function closePreview(){
+ document.getElementById("preview").classList.add("hidden");
+}
+
+/* ====== PLANTILLAS ====== */
+function saveTemplate(){
+ const tpls=get("templates");
+ tpls[Date.now()]={text:preview_text.value};
+ set("templates",tpls);
+ alert("Plantilla guardada");
+}
+function loadTemplates(){
+ const list=document.getElementById("tpl_list");
+ list.innerHTML="";
+ const tpls=get("templates");
+ Object.entries(tpls).forEach(([id,t])=>{
+  const b=document.createElement("button");
+  b.textContent="Reutilizar";
+  b.onclick=()=>{preview_text.value=t.text;openWin("novedad")};
+  list.appendChild(b);
+ });
+}
+
+/* ====== LIMPIAR ====== */
+function clearForm(win){
+ if(win==="novedad"){
+  ["nov_lugar","nov_nombre","nov_doc","nov_texto"].forEach(id=>document.getElementById(id).value="");
+ }
+}
 </script>
 
 </body>
