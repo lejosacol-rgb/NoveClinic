@@ -3,91 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NoveClinic FINAL</title>
-
+<title>NoveClinic FINAL V7</title>
 <style>
-body{
- font-family:Arial,Helvetica,sans-serif;
- margin:0;
- background:#f4f6f8;
-}
-header{
- background:#0b5ed7;
- color:#fff;
- padding:12px;
- text-align:center;
- font-size:18px;
-}
-nav{
- display:flex;
- gap:6px;
- padding:8px;
- background:#e9ecef;
- flex-wrap:wrap;
- justify-content:center;
-}
-nav button{
- padding:8px 12px;
- border:none;
- border-radius:6px;
- background:#0b5ed7;
- color:white;
- cursor:pointer;
-}
-nav button.secondary{
- background:#6c757d;
-}
-section{
- display:none;
- padding:10px;
-}
-section.active{
- display:block;
-}
-.field{
- margin-bottom:10px;
-}
-.field label{
- font-weight:bold;
- display:block;
- margin-bottom:4px;
-}
-.field input, .field select, .field textarea{
- width:100%;
- padding:8px;
- border-radius:6px;
- border:1px solid #ccc;
- font-size:16px;
-}
-textarea{ resize:vertical }
-.small{
- font-size:12px;
- color:#555;
-}
-.actions{
- display:flex;
- gap:8px;
- flex-wrap:wrap;
-}
-.actions button{
- flex:1;
- padding:10px;
- border:none;
- border-radius:6px;
- font-size:15px;
- cursor:pointer;
-}
-.send{ background:#25d366;color:#fff }
-.save{ background:#0b5ed7;color:#fff }
-.clear{ background:#dc3545;color:#fff }
-.card{
- background:#fff;
- border-radius:8px;
- padding:10px;
- margin-bottom:10px;
- box-shadow:0 1px 4px rgba(0,0,0,.1);
-}
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8}
+header{background:#0b5ed7;color:#fff;padding:12px;text-align:center;font-size:18px}
+nav{display:flex;gap:6px;padding:8px;background:#e9ecef;flex-wrap:wrap;justify-content:center}
+nav button{padding:8px 12px;border:none;border-radius:6px;background:#0b5ed7;color:white;cursor:pointer}
+nav button.secondary{background:#6c757d}
+section{display:none;padding:10px}
+section.active{display:block}
+.field{margin-bottom:10px}
+.field label{font-weight:bold;display:block;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:16px}
+textarea{resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions button{flex:1;padding:10px;border:none;border-radius:6px;font-size:15px;cursor:pointer}
+.send{background:#25d366;color:#fff}
+.save{background:#0b5ed7;color:#fff}
+.clear{background:#dc3545;color:#fff}
+.card{background:#fff;border-radius:8px;padding:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .hidden{display:none}
+#previewModal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;z-index:9999;width:90%;max-width:500px;padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+#previewModal textarea{height:180px;width:100%;margin-bottom:10px;}
 </style>
 </head>
 
@@ -95,88 +32,39 @@ textarea{ resize:vertical }
 
 <header>NoveClinic – Registro Inteligente</header>
 
-<nav>
-<button onclick="openWin('novedad')">📝 Novedad</button>
-<button onclick="openWin('ingreso')">⬅️ Ingreso</button>
-<button onclick="openWin('salida')">➡️ Salida</button>
-<button onclick="openWin('plantillas')">📂 Plantillas</button>
+<nav id="mainNav">
+<button onclick="openWin('base')">🧩 Ventana Base</button>
 <button class="secondary" onclick="openWin('config')">⚙️ Configuración</button>
 </nav>
 
-<!-- ================= NOVEDAD ================= -->
-<section id="novedad" class="active">
+<!-- ================= VENTANA BASE ================= -->
+<section id="base" class="active">
 <div class="card">
-<h3>Registro de Novedad</h3>
+<h3>Ventana Base</h3>
 
 <div class="field">
 <label>📅 Fecha y hora</label>
-<input id="nov_fecha" readonly>
+<input id="base_fecha" readonly>
 </div>
 
-<div class="field">
-<label>📍 Lugar</label>
-<input list="lugares" id="nov_lugar">
-<datalist id="lugares"></datalist>
-</div>
-
+<!-- CAMPOS FIJOS -->
 <div class="field">
 <label>👤 Nombre</label>
-<input id="nov_nombre">
+<input id="base_nombre">
 </div>
 
 <div class="field">
-<label>🆔 Tipo documento</label>
-<select id="nov_tipo">
-<option>CC</option>
-<option>TI</option>
-<option>RC</option>
-<option>PPT</option>
-</select>
+<label>🆔 Documento</label>
+<input id="base_doc" inputmode="numeric">
 </div>
 
-<div class="field">
-<label>🆔 Número</label>
-<input id="nov_doc" inputmode="numeric">
-</div>
-
-<div class="field">
-<label>📋 Novedad</label>
-<textarea id="nov_texto"></textarea>
-</div>
-
-<div id="custom_novedad"></div>
+<!-- ETIQUETAS DINÁMICAS -->
+<div id="custom_base"></div>
 
 <div class="actions">
-<button class="send" onclick="previewWhatsApp('novedad')">📤 WhatsApp</button>
-<button class="save" onclick="saveTemplate()">⭐ Guardar plantilla</button>
-<button class="clear" onclick="clearForm('novedad')">🧹 Limpiar</button>
+<button class="send" onclick="previewWhatsApp('base')">📤 WhatsApp</button>
+<button class="clear" onclick="clearForm('base')">🧹 Limpiar</button>
 </div>
-</div>
-</section>
-
-<!-- ================= INGRESO ================= -->
-<section id="ingreso">
-<div class="card">
-<h3>Ingreso</h3>
-<div id="custom_ingreso"></div>
-<button class="send" onclick="previewWhatsApp('ingreso')">📤 WhatsApp</button>
-</div>
-</section>
-
-<!-- ================= SALIDA ================= -->
-<section id="salida">
-<div class="card">
-<h3>Salida</h3>
-<div id="custom_salida"></div>
-<button class="send" onclick="previewWhatsApp('salida')">📤 WhatsApp</button>
-</div>
-</section>
-
-<!-- ================= PLANTILLAS ================= -->
-<section id="plantillas">
-<div class="card">
-<h3>Plantillas guardadas</h3>
-<div id="tpl_list"></div>
 </div>
 </section>
 
@@ -185,8 +73,16 @@ textarea{ resize:vertical }
 <div class="card">
 <h3>Configuración</h3>
 
+<h4>➕ Crear nueva ventana (clonar)</h4>
+<div class="field">
+<input id="new_win_name" placeholder="Nombre de la ventana">
+</div>
+<button class="save" onclick="cloneWindow()">➕ Crear ventana</button>
+
+<hr>
+
 <h4>➕ Etiquetas personalizadas</h4>
-<div class="field"><input id="lbl_name" placeholder="Etiqueta (ej: 🚑 Trasladado por)"></div>
+<div class="field"><input id="lbl_name" placeholder="Nombre etiqueta"></div>
 <div class="field">
 <select id="lbl_type">
 <option value="text">Texto</option>
@@ -196,24 +92,21 @@ textarea{ resize:vertical }
 </div>
 <div class="field"><input id="lbl_values" placeholder="Valores separados por coma"></div>
 <div class="field">
-<label><input type="checkbox" id="lbl_nov" checked> Novedad</label>
-<label><input type="checkbox" id="lbl_ing"> Ingreso</label>
-<label><input type="checkbox" id="lbl_sal"> Salida</label>
+<label><input type="checkbox" id="lbl_base" checked> Ventana Base</label>
 </div>
 <button class="save" onclick="addLabel()">Guardar etiqueta</button>
 
 <hr>
-
-<h4>🧠 Aprendizaje</h4>
-<button onclick="resetLearning()">Borrar aprendizaje</button>
+<h4>🛠️ Administrar etiquetas</h4>
+<div id="label_manager"></div>
 
 </div>
 </section>
 
-<!-- ================= RESUMEN ================= -->
-<div id="preview" class="card hidden">
+<!-- ================= PREVIEW ================= -->
+<div id="previewModal" class="hidden">
 <h3>Resumen WhatsApp</h3>
-<textarea id="preview_text" style="height:200px"></textarea>
+<textarea id="preview_text"></textarea>
 <div class="actions">
 <button class="send" onclick="sendWA()">Enviar</button>
 <button onclick="closePreview()">Cancelar</button>
@@ -221,24 +114,48 @@ textarea{ resize:vertical }
 </div>
 
 <script>
-/* ====== UTIL ====== */
-function openWin(id){
- document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- if(id==="plantillas") loadTemplates();
-}
-
-/* ====== FECHA ====== */
-function now(){
- return new Date().toLocaleString("es-CO");
-}
-document.getElementById("nov_fecha").value=now();
-
-/* ====== STORAGE ====== */
+/* ===== UTIL ===== */
+function now(){return new Date().toLocaleString("es-CO")}
 function get(k){return JSON.parse(localStorage.getItem(k)||"{}")}
 function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
 
-/* ====== ETIQUETAS ====== */
+document.getElementById("base_fecha").value = now();
+
+function openWin(id){
+ document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ renderCustomLabels();
+}
+
+/* ===== CLONAR VENTANA ===== */
+function cloneWindow(){
+ const name = new_win_name.value.trim();
+ if(!name) return alert("Nombre requerido");
+
+ const id = "win_"+Date.now();
+
+ // Botón
+ const btn = document.createElement("button");
+ btn.textContent = "🧩 "+name;
+ btn.onclick = ()=>openWin(id);
+ document.getElementById("mainNav").insertBefore(btn, document.querySelector(".secondary"));
+
+ // Sección
+ const base = document.getElementById("base");
+ const clone = base.cloneNode(true);
+ clone.id = id;
+ clone.querySelector("h3").textContent = name;
+ clone.querySelectorAll("[id]").forEach(e=>{
+  e.id = e.id.replace("base", id);
+ });
+ document.body.insertBefore(clone, document.getElementById("config"));
+
+ document.getElementById(id+"_fecha").value = now();
+ new_win_name.value="";
+ alert("Ventana creada");
+}
+
+/* ===== ETIQUETAS ===== */
 function addLabel(){
  const labels=get("labels");
  const id="lbl_"+Date.now();
@@ -246,97 +163,94 @@ function addLabel(){
   name:lbl_name.value,
   type:lbl_type.value,
   values:lbl_values.value.split(",").map(v=>v.trim()).filter(v=>v),
-  windows:{
-   nov:lbl_nov.checked,
-   ing:lbl_ing.checked,
-   sal:lbl_sal.checked
-  }
+  windows:{base:lbl_base.checked}
  };
  set("labels",labels);
- lbl_name.value="";lbl_values.value="";
- renderLabels();
- alert("Etiqueta guardada");
+ lbl_name.value=""; lbl_values.value="";
+ renderCustomLabels(); renderLabelManager();
 }
 
-function renderLabels(){
- ["novedad","ingreso","salida"].forEach(w=>{
-  const cont=document.getElementById("custom_"+w);
-  if(!cont) return;
+function renderCustomLabels(){
+ const labels=get("labels");
+ document.querySelectorAll("[id^='custom_']").forEach(cont=>{
   cont.innerHTML="";
-  const labels=get("labels");
+  const win = cont.id.replace("custom_","");
   Object.values(labels).forEach(l=>{
-   if((w==="novedad"&&l.windows.nov)||(w==="ingreso"&&l.windows.ing)||(w==="salida"&&l.windows.sal)){
-    const div=document.createElement("div");
-    div.className="field";
-    div.innerHTML="<label>"+l.name+"</label>";
+   if(l.windows[win]){
+    const d=document.createElement("div");
+    d.className="field";
+    d.innerHTML="<label>"+l.name+"</label>";
+    let el;
     if(l.type==="select"){
-     const sel=document.createElement("select");
-     l.values.forEach(v=>{
-      const o=document.createElement("option");o.text=v;sel.add(o);
-     });
-     div.appendChild(sel);
+     el=document.createElement("select");
+     l.values.forEach(v=>el.add(new Option(v,v)));
     }else{
-     const inp=document.createElement("input");
-     if(l.type==="number") inp.inputMode="numeric";
-     div.appendChild(inp);
+     el=document.createElement("input");
+     if(l.type==="number") el.inputMode="numeric";
     }
-    cont.appendChild(div);
+    d.appendChild(el);
+    cont.appendChild(d);
    }
   });
  });
 }
-renderLabels();
 
-/* ====== WHATSAPP ====== */
-let currentText="";
+/* ===== WHATSAPP ===== */
 function previewWhatsApp(win){
  let txt="";
- if(win==="novedad"){
-  if(nov_fecha.value) txt+="📅 "+nov_fecha.value+"\n";
-  if(nov_lugar.value) txt+="📍 "+nov_lugar.value+"\n";
-  if(nov_nombre.value) txt+="👤 "+nov_nombre.value+"\n";
-  if(nov_doc.value) txt+="🆔 "+nov_tipo.value+" "+nov_doc.value+"\n";
-  if(nov_texto.value) txt+="📋 "+nov_texto.value+"\n";
- }
- document.getElementById("preview_text").value=txt;
- currentText=txt;
- document.getElementById("preview").classList.remove("hidden");
+ document.querySelectorAll("#"+win+" input,#"+win+" textarea,#custom_"+win+" input,#custom_"+win+" select")
+ .forEach(e=>{if(e.value) txt+=e.previousSibling.textContent+": "+e.value+"\n"});
+ preview_text.value=txt;
+ previewModal.classList.remove("hidden");
 }
-
 function sendWA(){
- const t=encodeURIComponent(preview_text.value);
- window.open("https://wa.me/?text="+t,"_blank");
+ window.open("https://wa.me/?text="+encodeURIComponent(preview_text.value));
  closePreview();
 }
+function closePreview(){previewModal.classList.add("hidden")}
 
-function closePreview(){
- document.getElementById("preview").classList.add("hidden");
+/* ===== LIMPIAR ===== */
+function clearForm(win){
+ document.querySelectorAll("#"+win+" input:not([readonly]),#"+win+" textarea")
+ .forEach(e=>e.value="");
+ renderCustomLabels();
 }
 
-/* ====== PLANTILLAS ====== */
-function saveTemplate(){
- const tpls=get("templates");
- tpls[Date.now()]={text:preview_text.value};
- set("templates",tpls);
- alert("Plantilla guardada");
-}
-function loadTemplates(){
- const list=document.getElementById("tpl_list");
- list.innerHTML="";
- const tpls=get("templates");
- Object.entries(tpls).forEach(([id,t])=>{
-  const b=document.createElement("button");
-  b.textContent="Reutilizar";
-  b.onclick=()=>{preview_text.value=t.text;openWin("novedad")};
-  list.appendChild(b);
+/* ===== EDITAR / DUPLICAR ETIQUETAS ===== */
+function renderLabelManager(){
+ const cont=label_manager;
+ cont.innerHTML="";
+ const labels=get("labels");
+ Object.entries(labels).forEach(([id,l])=>{
+  const c=document.createElement("div");
+  c.className="card";
+  c.innerHTML=`
+   <input id="n_${id}" value="${l.name}">
+   <button onclick="saveLabel('${id}')">💾</button>
+   <button onclick="dupLabel('${id}')">📑</button>
+   <button onclick="delLabel('${id}')">🗑️</button>`;
+  cont.appendChild(c);
  });
 }
-
-/* ====== LIMPIAR ====== */
-function clearForm(win){
- if(win==="novedad"){
-  ["nov_lugar","nov_nombre","nov_doc","nov_texto"].forEach(id=>document.getElementById(id).value="");
- }
+function saveLabel(id){
+ const labels=get("labels");
+ labels[id].name=document.getElementById("n_"+id).value;
+ set("labels",labels);
+ renderCustomLabels(); renderLabelManager();
+}
+function dupLabel(id){
+ const labels=get("labels");
+ const n="lbl_"+Date.now();
+ labels[n]=JSON.parse(JSON.stringify(labels[id]));
+ labels[n].name+=" (copia)";
+ set("labels",labels);
+ renderLabelManager();
+}
+function delLabel(id){
+ const labels=get("labels");
+ delete labels[id];
+ set("labels",labels);
+ renderCustomLabels(); renderLabelManager();
 }
 </script>
 
