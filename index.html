@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registro Integral de Salud</title>
-
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f2027">
-
 <style>
 :root{
   --bg:#f4f6f8;
@@ -24,154 +22,65 @@
   }
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-header{
-  background:linear-gradient(135deg,var(--primary),var(--accent));
-  color:white;
-  padding:16px;
-  text-align:center;
-  font-weight:700;
-}
-#main{
-  padding:16px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:14px;
-}
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:20px;
-  text-align:center;
-  cursor:pointer;
-  transition:.25s;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
+header{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;padding:16px;text-align:center;font-weight:700;}
+#main{padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;}
+.card{background:var(--card);border-radius:16px;padding:20px;text-align:center;cursor:pointer;transition:.25s;box-shadow:0 6px 18px rgba(0,0,0,.08);}
 .card:hover{transform:translateY(-4px)}
 .card span{font-size:30px}
 
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:100;
-}
-.modal-content{
-  background:var(--card);
-  width:95%;
-  max-width:520px;
-  max-height:90vh;
-  overflow:auto;
-  border-radius:18px;
-  padding:16px;
-}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;}
+.modal-content{background:var(--card);width:95%;max-width:520px;max-height:90vh;overflow:auto;border-radius:18px;padding:16px;}
 
-input,select,textarea,button{
-  width:100%;
-  margin-bottom:10px;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:15px;
-}
-button{
-  background:var(--primary);
-  color:white;
-  border:none;
-}
+input,select,textarea,button{width:100%;margin-bottom:10px;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:15px;}
+button{background:var(--primary);color:white;border:none;}
 button.secondary{background:#666}
 
-.fab{
-  position:fixed;
-  top:14px;
-  right:14px;
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:var(--accent);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  cursor:pointer;
-}
+.fab{position:fixed;top:14px;right:14px;width:48px;height:48px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;justify-content:space-around;padding:10px;box-shadow:0 -4px 12px rgba(0,0,0,.15);}
+nav span{font-size:22px;}
 
-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:var(--card);
-  display:flex;
-  justify-content:space-around;
-  padding:10px;
-  box-shadow:0 -4px 12px rgba(0,0,0,.15);
-}
-nav span{font-size:22px}
-
-#splash{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,var(--primary),var(--accent));
-  color:white;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
+#splash{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
+#splash .icon{font-size:64px;margin-bottom:16px;}
+#app{display:none;}
+img.preview{width:100%;margin-bottom:10px;border-radius:10px;display:none;}
 </style>
 </head>
-
 <body>
 
 <!-- SPLASH -->
 <div id="splash">
-  <div style="font-size:64px">📋</div>
+  <div class="icon">📋</div>
   <h1>Registro Integral</h1>
-  <small>Cargando…</small>
+  <p>Cargando…</p>
 </div>
 
+<!-- APP -->
+<div id="app">
 <header>📋 Registro Integral de Salud</header>
-
 <div id="main"></div>
-
 <div class="fab" onclick="openConfig()">⚙️</div>
-
 <nav>
   <span>🏠</span>
   <span onclick="openConfig()">⚙️</span>
   <span>ℹ️</span>
 </nav>
+</div>
 
 <!-- CONFIGURACIÓN -->
 <div class="modal" id="config">
   <div class="modal-content">
     <h3>⚙️ Configuración</h3>
-
     <label>Número WhatsApp</label>
     <input id="wsap" placeholder="57300xxxxxx">
-
     <h4>➕ Crear ventana</h4>
     <input id="vName" placeholder="Nombre de la ventana">
     <input id="vIcon" placeholder="Emoji (📋 🚑 💉)">
     <textarea id="vFields" placeholder="Campo | tipo | opciones (opcional)"></textarea>
-
     <button onclick="addWindow()">Guardar ventana</button>
-
     <h4>🗑️ Eliminar ventana</h4>
     <select id="delWin"></select>
     <button class="secondary" onclick="delWindow()">Eliminar</button>
-
     <button onclick="closeConfig()">Cerrar</button>
   </div>
 </div>
@@ -198,27 +107,17 @@ function render(){
   $("main").innerHTML = ""
   $("delWin").innerHTML = ""
   windows.forEach((w,i)=>{
-    $("main").innerHTML += `
-      <div class="card" onclick="openForm(${i})">
-        <span>${w.icon}</span><br>${w.name}
-      </div>`
+    $("main").innerHTML += `<div class="card" onclick="openForm(${i})"><span>${w.icon}</span><br>${w.name}</div>`
     $("delWin").innerHTML += `<option value="${i}">${w.name}</option>`
   })
 }
 render()
 
 function openConfig(){ $("config").style.display="flex" }
-function closeConfig(){
-  localStorage.setItem("wsap", $("wsap").value)
-  $("config").style.display="none"
-}
+function closeConfig(){ localStorage.setItem("wsap", $("wsap").value); $("config").style.display="none" }
 
 function addWindow(){
-  windows.push({
-    name: $("vName").value,
-    icon: $("vIcon").value || "📋",
-    fields: $("vFields").value.split("\n")
-  })
+  windows.push({name:$("vName").value, icon:$("vIcon").value||"📋", fields:$("vFields").value.split("\n")})
   set("windows", windows)
   render()
 }
@@ -231,7 +130,7 @@ function delWindow(){
   }
 }
 
-let current=null
+let current = null
 function openForm(i){
   current = windows[i]
   $("formTitle").innerText = current.icon+" "+current.name
@@ -241,35 +140,55 @@ function openForm(i){
     if(t==="num") $("formBody").innerHTML+=`<input type="number" placeholder="${n}">`
     else if(t==="tel") $("formBody").innerHTML+=`<input type="tel" placeholder="${n}">`
     else if(t==="auto") $("formBody").innerHTML+=`<input value="${new Date().toLocaleString()}" readonly>`
-    else if(t==="select"){
-      $("formBody").innerHTML+=`<select>${o.split(",").map(x=>`<option>${x}</option>`).join("")}</select>`
-    } else if(t==="multi"){
-      $("formBody").innerHTML+=`<textarea placeholder="${n}"></textarea>`
+    else if(t==="select") $("formBody").innerHTML+=`<select>${o.split(",").map(x=>`<option>${x}</option>`).join("")}</select>`
+    else if(t==="multi") $("formBody").innerHTML+=`<textarea placeholder="${n}"></textarea>`
+    else if(t==="camera"){
+      const container = document.createElement("div")
+      const input = document.createElement("input")
+      input.type = "file"
+      input.accept = "image/*"
+      input.capture = "environment"
+      input.style.marginBottom="10px"
+      const preview = document.createElement("img")
+      preview.className="preview"
+      input.onchange = e => {
+        const file = e.target.files[0]
+        if(file){ preview.src = URL.createObjectURL(file); preview.style.display="block" }
+      }
+      container.appendChild(input)
+      container.appendChild(preview)
+      $("formBody").appendChild(container)
     } else {
       $("formBody").innerHTML+=`<input placeholder="${n}">`
     }
   })
   $("form").style.display="flex"
 }
+
 function closeForm(){ $("form").style.display="none" }
 
 function sendWA(){
   let txt="*"+current.name+"*\n"
-  [...$("formBody").children].forEach(e=>txt+=e.value+"\n")
+  [...$("formBody").children].forEach(e=>{
+    if(e.tagName=="DIV"){ // cámara
+      const imgs = e.getElementsByTagName("img")
+      if(imgs.length>0 && imgs[0].src) txt+="[Foto tomada]\n"
+    } else txt+=e.value+"\n"
+  })
   let num = localStorage.getItem("wsap")
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`)
 }
 
-/* SPLASH – CORREGIDO */
-setTimeout(()=>{
-  const s = document.getElementById("splash")
-  if(s) s.style.display="none"
-},1200)
+/* SPLASH seguro */
+document.addEventListener("DOMContentLoaded", ()=>{
+  const splash = $("splash")
+  const app = $("app")
+  if(splash && app){
+    setTimeout(()=>{splash.style.display="none"; app.style.display="block"},1500)
+  }
+})
 
-/* SERVICE WORKER */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js")
-}
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js") }
 </script>
 
 </body>
