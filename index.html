@@ -11,7 +11,7 @@
 <style>
 :root{
   --bg:#f4f6f8;
-  --card:#fff;
+  --card:#ffffff;
   --primary:#0f2027;
   --accent:#2c5364;
   --text:#111;
@@ -26,7 +26,7 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:system-ui;
+  font-family:system-ui, sans-serif;
   background:var(--bg);
   color:var(--text);
 }
@@ -134,6 +134,7 @@ nav span{font-size:22px}
 
 <body>
 
+<!-- SPLASH -->
 <div id="splash">
   <div style="font-size:64px">📋</div>
   <h1>Registro Integral</h1>
@@ -152,18 +153,18 @@ nav span{font-size:22px}
   <span>ℹ️</span>
 </nav>
 
-<!-- CONFIG -->
+<!-- CONFIGURACIÓN -->
 <div class="modal" id="config">
   <div class="modal-content">
     <h3>⚙️ Configuración</h3>
 
     <label>Número WhatsApp</label>
-    <input id="wsap">
+    <input id="wsap" placeholder="57300xxxxxx">
 
     <h4>➕ Crear ventana</h4>
-    <input id="vName" placeholder="Nombre ventana">
-    <input id="vIcon" placeholder="Emoji">
-    <textarea id="vFields" placeholder="Etiqueta | tipo | opciones"></textarea>
+    <input id="vName" placeholder="Nombre de la ventana">
+    <input id="vIcon" placeholder="Emoji (📋 🚑 💉)">
+    <textarea id="vFields" placeholder="Campo | tipo | opciones (opcional)"></textarea>
 
     <button onclick="addWindow()">Guardar ventana</button>
 
@@ -175,7 +176,7 @@ nav span{font-size:22px}
   </div>
 </div>
 
-<!-- FORM -->
+<!-- FORMULARIO -->
 <div class="modal" id="form">
   <div class="modal-content">
     <h3 id="formTitle"></h3>
@@ -186,82 +187,90 @@ nav span{font-size:22px}
 </div>
 
 <script>
-const $=id=>document.getElementById(id)
-const get=k=>JSON.parse(localStorage.getItem(k)||"[]")
-const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+const $ = id => document.getElementById(id)
+const get = k => JSON.parse(localStorage.getItem(k) || "[]")
+const set = (k,v) => localStorage.setItem(k, JSON.stringify(v))
 
-let windows=get("windows")
-$("wsap").value=localStorage.getItem("wsap")||""
+let windows = get("windows")
+$("wsap").value = localStorage.getItem("wsap") || ""
 
 function render(){
-  $("main").innerHTML=""
-  $("delWin").innerHTML=""
+  $("main").innerHTML = ""
+  $("delWin").innerHTML = ""
   windows.forEach((w,i)=>{
-    $("main").innerHTML+=`
+    $("main").innerHTML += `
       <div class="card" onclick="openForm(${i})">
         <span>${w.icon}</span><br>${w.name}
       </div>`
-    $("delWin").innerHTML+=`<option value="${i}">${w.name}</option>`
+    $("delWin").innerHTML += `<option value="${i}">${w.name}</option>`
   })
 }
 render()
 
-function openConfig(){$("config").style.display="flex"}
+function openConfig(){ $("config").style.display="flex" }
 function closeConfig(){
-  localStorage.setItem("wsap",$("wsap").value)
+  localStorage.setItem("wsap", $("wsap").value)
   $("config").style.display="none"
 }
 
 function addWindow(){
   windows.push({
-    name:$("vName").value,
-    icon:$("vIcon").value||"📋",
-    fields:$("vFields").value.split("\n")
+    name: $("vName").value,
+    icon: $("vIcon").value || "📋",
+    fields: $("vFields").value.split("\n")
   })
-  set("windows",windows)
+  set("windows", windows)
   render()
 }
 
 function delWindow(){
-  if(confirm("¿Eliminar ventana?")){
+  if(confirm("¿Eliminar esta ventana?")){
     windows.splice($("delWin").value,1)
-    set("windows",windows)
+    set("windows", windows)
     render()
   }
 }
 
 let current=null
 function openForm(i){
-  current=windows[i]
-  $("formTitle").innerText=current.icon+" "+current.name
-  $("formBody").innerHTML=""
+  current = windows[i]
+  $("formTitle").innerText = current.icon+" "+current.name
+  $("formBody").innerHTML = ""
   current.fields.forEach(f=>{
-    let [n,t,o]=f.split("|").map(x=>x.trim())
+    let [n,t,o] = f.split("|").map(x=>x.trim())
     if(t==="num") $("formBody").innerHTML+=`<input type="number" placeholder="${n}">`
     else if(t==="tel") $("formBody").innerHTML+=`<input type="tel" placeholder="${n}">`
     else if(t==="auto") $("formBody").innerHTML+=`<input value="${new Date().toLocaleString()}" readonly>`
     else if(t==="select"){
       $("formBody").innerHTML+=`<select>${o.split(",").map(x=>`<option>${x}</option>`).join("")}</select>`
+    } else if(t==="multi"){
+      $("formBody").innerHTML+=`<textarea placeholder="${n}"></textarea>`
     } else {
       $("formBody").innerHTML+=`<input placeholder="${n}">`
     }
   })
   $("form").style.display="flex"
 }
-function closeForm(){$("form").style.display="none"}
+function closeForm(){ $("form").style.display="none" }
 
 function sendWA(){
   let txt="*"+current.name+"*\n"
   [...$("formBody").children].forEach(e=>txt+=e.value+"\n")
-  let num=localStorage.getItem("wsap")
+  let num = localStorage.getItem("wsap")
   window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`)
 }
 
-setTimeout(()=>$("#splash").style.display="none",1400)
+/* SPLASH – CORREGIDO */
+setTimeout(()=>{
+  const s = document.getElementById("splash")
+  if(s) s.style.display="none"
+},1200)
 
-if("serviceWorker"in navigator){
+/* SERVICE WORKER */
+if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js")
 }
 </script>
+
 </body>
 </html>
