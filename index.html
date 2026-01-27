@@ -3,301 +3,300 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NoveClinic – Sistema Base Definitivo</title>
+<title>📋 Registro Integral</title>
 
 <style>
-body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f6f8}
-header{background:#0b5ed7;color:#fff;padding:12px;text-align:center;font-size:18px}
-nav{display:flex;flex-wrap:wrap;gap:8px;padding:10px;background:#e9ecef;justify-content:center}
-nav button{padding:10px 16px;border:none;border-radius:10px;background:#0b5ed7;color:#fff;font-size:15px;cursor:pointer}
-nav button.secondary{background:#6c757d}
-
-/* ===== MODAL GENERAL ===== */
-.modal-bg{
- position:fixed;top:0;left:0;width:100%;height:100%;
- background:rgba(0,0,0,.6);
- display:none;align-items:center;justify-content:center;
- z-index:1000;
+:root{
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --txt:#222;
+  --pri:#2563eb;
+  --sec:#22c55e;
+  --rad:16px;
 }
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --txt:#e5e7eb;
+  }
+}
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:var(--bg);color:var(--txt)}
+header{
+  padding:14px;
+  font-size:20px;
+  font-weight:700;
+  text-align:center;
+}
+main{padding:16px;display:grid;gap:16px;padding-bottom:90px}
+.card{
+  background:var(--card);
+  border-radius:var(--rad);
+  padding:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  transition:.2s;
+}
+.card:hover{transform:translateY(-2px)}
+button{
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
+  background:var(--pri);
+  color:#fff;
+  font-weight:600;
+}
+button.alt{background:var(--sec)}
+button.ghost{background:#64748b}
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #94a3b8;
+  margin-bottom:8px;
+  background:transparent;
+  color:inherit;
+}
+.field{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.icon{font-size:20px}
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:space-around;
+  background:var(--card);
+  padding:10px;
+  box-shadow:0 -4px 10px rgba(0,0,0,.1);
+}
+.nav button{background:none;color:var(--txt);font-size:18px}
 .modal{
- background:#fff;border-radius:14px;
- width:92%;max-width:520px;
- padding:16px;max-height:90vh;
- overflow:auto;
- box-shadow:0 10px 35px rgba(0,0,0,.4);
- animation:zoom .2s ease;
- position:relative;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
 }
-@keyframes zoom{from{transform:scale(.9);opacity:.6}to{transform:scale(1);opacity:1}}
-.modal h3{text-align:center;margin-top:0}
-.modal-close{
- position:absolute;top:12px;right:14px;
- background:#dc3545;color:#fff;border:none;
- border-radius:50%;width:34px;height:34px;
- cursor:pointer;font-weight:bold;
+.modal.active{display:flex}
+.modal .card{
+  width:95%;
+  max-width:520px;
+  max-height:90vh;
+  overflow:auto;
 }
+.preview{width:100%;border-radius:12px;margin-top:8px}
 
-/* ===== FORM ===== */
-.field{margin-bottom:10px}
-.field label{font-weight:bold;display:block;margin-bottom:4px}
-.field input,.field select{
- width:100%;padding:9px;border-radius:8px;border:1px solid #ccc;font-size:15px
+/* SPLASH */
+#splash{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#2563eb,#1e3a8a);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  animation:fadeOut 1s ease forwards;
+  animation-delay:2.5s;
 }
-.actions{display:flex;gap:8px;margin-top:12px}
-.actions button{flex:1;padding:10px;border:none;border-radius:10px;font-size:15px;cursor:pointer}
-.send{background:#25d366;color:#fff}
-.clear{background:#dc3545;color:#fff}
-.save{background:#0b5ed7;color:#fff}
-
-/* ===== CONFIG ===== */
-section{display:none;padding:12px}
-section.active{display:block}
-.card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-.big-btn{
- display:block;margin:16px auto;padding:14px 22px;
- font-size:16px;border-radius:12px;
- background:linear-gradient(135deg,#0b5ed7,#0d6efd);
- color:#fff;border:none;cursor:pointer;
- box-shadow:0 4px 14px rgba(0,0,0,.25);
-}
-.big-btn:hover{opacity:.9}
-.hidden{display:none}
-
-/* ===== ICON PICKER ===== */
-.icon-grid{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(48px,1fr));
- gap:10px;
- text-align:center;
-}
-.icon-btn{
- font-size:24px;
- padding:8px;
- border-radius:10px;
- cursor:pointer;
- background:#f1f3f5;
- transition:.2s;
-}
-.icon-btn:hover{
- background:#0b5ed7;
- color:#fff;
- transform:scale(1.1);
-}
+.splash-card{text-align:center;color:#fff;animation:pop 1s ease}
+.splash-icon{font-size:64px;margin-bottom:12px}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
 </style>
 </head>
 
 <body>
 
-<header>NoveClinic – Registro Inteligente</header>
-<nav id="mainNav"></nav>
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-card">
+    <div class="splash-icon">📋</div>
+    <h1>Registro Integral</h1>
+    <p>Gestión de Salud Digital</p>
+  </div>
+</div>
+
+<header>⚙️ 📋 Registro Integral de Salud</header>
+<main id="windows"></main>
+
+<!-- NAV -->
+<div class="nav">
+  <button onclick="openConfig()">⚙️</button>
+  <button onclick="alert('Registro Integral v1.0')">ℹ️</button>
+</div>
 
 <!-- CONFIG -->
-<section id="config">
+<div class="modal" id="config">
 <div class="card">
-<h3 style="text-align:center">⚙️ Configuración</h3>
+<h3>⚙️ Configuración</h3>
 
-<input id="newWinName" placeholder="Nombre de la ventana">
-<button class="big-btn" onclick="createWindow()">➕ Crear ventana</button>
+<input id="wsap" placeholder="Número WhatsApp (57XXXXXXXXXX)">
+<button onclick="save()">Guardar WhatsApp</button>
 
 <hr>
+<h4>➕ Crear ventana</h4>
+<input id="wName" placeholder="Nombre ventana">
+<input id="wIcon" placeholder="Emoji / ícono">
+<button onclick="addWindow()">Agregar</button>
 
-<h4>➕ Crear etiqueta dinámica</h4>
+<h4>🗑️ Eliminar ventana</h4>
+<select id="delWin"></select>
+<button onclick="delWindow()">Eliminar</button>
 
-<div class="field">
-<label>Ícono</label>
-<div style="display:flex;gap:8px">
-<input id="lbl_icon" placeholder="Selecciona un ícono" readonly>
-<button onclick="openIconPicker()">🎨</button>
-</div>
-</div>
-
-<input id="lbl_name" placeholder="Nombre etiqueta">
-
-<select id="lbl_type">
-<option value="text">Texto</option>
-<option value="number">Número</option>
-<option value="select">Desplegable</option>
-<option value="auto">⚙️ Automático</option>
+<hr>
+<h4>➕ Crear campo</h4>
+<select id="wSel"></select>
+<input id="fIcon" placeholder="Emoji">
+<input id="fName" placeholder="Nombre campo">
+<select id="fType">
+  <option value="text">Texto</option>
+  <option value="number">Numérico</option>
+  <option value="auto">Automático</option>
+  <option value="select">Desplegable</option>
+  <option value="cam">Cámara</option>
 </select>
+<input id="fOpt" placeholder="Opciones (A|B|C)">
+<button onclick="addField()">Agregar campo</button>
 
-<input id="lbl_values" placeholder="Valores (coma separados)">
+<hr>
+<h4>⭐ Plantillas</h4>
+<select id="tplWin"></select>
+<input id="tplName" placeholder="Nombre plantilla">
+<button onclick="saveTemplate()">Guardar plantilla</button>
 
-<div id="auto_options" class="field hidden">
-<label>Valor automático</label>
-<select id="lbl_auto">
-<option value="date">📅 Fecha</option>
-<option value="time">⏰ Hora</option>
-<option value="datetime">📅⏰ Fecha y hora</option>
-</select>
-</div>
+<select id="tplSel"></select>
+<button onclick="applyTemplate()">Aplicar plantilla</button>
 
-<div id="label_windows"></div>
-<button class="big-btn" onclick="addLabel()">Guardar etiqueta</button>
-</div>
-</section>
-
-<!-- MODAL FORM -->
-<div id="modalBg" class="modal-bg">
-<div class="modal">
-<button class="modal-close" onclick="closeModal()">×</button>
-<div id="modalContent"></div>
-</div>
-</div>
-
-<!-- MODAL ICON PICKER -->
-<div id="iconBg" class="modal-bg">
-<div class="modal">
-<button class="modal-close" onclick="closeIconPicker()">×</button>
-<h3>🎨 Selecciona un ícono</h3>
-<div class="icon-grid" id="iconGrid"></div>
+<hr>
+<button class="ghost" onclick="closeConfig()">Cerrar</button>
 </div>
 </div>
 
 <script>
-/* ===== STORAGE ===== */
-function get(k){return JSON.parse(localStorage.getItem(k)||"{}")}
-function set(k,v){localStorage.setItem(k,JSON.stringify(v))}
+let data = JSON.parse(localStorage.getItem("appData")) || {
+  wsap:"",
+  windows:[],
+  templates:[]
+};
 
-/* ===== STRUCTURE ===== */
-let structure=get("structure");
-if(!structure.windows){
- structure={windows:{base:{name:"Ventana Base"}},labels:{}};
- set("structure",structure);
+function save(){
+  data.wsap = wsap.value;
+  localStorage.setItem("appData", JSON.stringify(data));
+  render();
 }
 
-/* ===== INIT ===== */
-function init(){
- mainNav.innerHTML="";
- Object.entries(structure.windows).forEach(([id,w])=>{
-  const b=document.createElement("button");
-  b.textContent=w.name;
-  b.onclick=()=>openModal(id);
-  mainNav.appendChild(b);
- });
- const cfg=document.createElement("button");
- cfg.textContent="⚙️ Configuración";
- cfg.className="secondary";
- cfg.onclick=()=>openWin("config");
- mainNav.appendChild(cfg);
- renderLabelWindows();
+function openConfig(){
+  wsap.value = data.wsap;
+  loadSelects();
+  config.classList.add("active");
 }
-init();
+function closeConfig(){config.classList.remove("active")}
 
-/* ===== MODAL FORM ===== */
-function openModal(win){
- modalContent.innerHTML=`<h3>${structure.windows[win].name}</h3><div id="custom_${win}"></div>
- <div class="actions">
- <button class="send" onclick="previewWA('${win}')">📤 WhatsApp</button>
- <button class="clear" onclick="clearForm('${win}')">🧹 Limpiar</button>
- </div>`;
- modalBg.style.display="flex";
- renderLabels();
-}
-function closeModal(){modalBg.style.display="none"}
-function openWin(id){
- document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+function addWindow(){
+  if(!wName.value) return;
+  data.windows.push({name:wName.value,icon:wIcon.value||"📋",fields:[]});
+  wName.value=wIcon.value="";
+  save();
 }
 
-/* ===== ICON PICKER ===== */
-const icons=[
-"👤","🆔","📅","⏰","📅⏰","🏥","🚑","⚠️","📝","📍","📞","💊","🩺","🩸","🧠","❤️","🔢","📄","📂","🧾"
-];
-
-function openIconPicker(){
- iconGrid.innerHTML="";
- icons.forEach(i=>{
-  const b=document.createElement("div");
-  b.className="icon-btn";
-  b.textContent=i;
-  b.onclick=()=>{lbl_icon.value=i;closeIconPicker()};
-  iconGrid.appendChild(b);
- });
- iconBg.style.display="flex";
-}
-function closeIconPicker(){iconBg.style.display="none"}
-
-/* ===== LABELS ===== */
-lbl_type.addEventListener("change",()=>{
- auto_options.classList.toggle("hidden",lbl_type.value!=="auto");
-});
-
-function autoValue(t){
- const d=new Date();
- if(t==="date")return d.toLocaleDateString("es-CO");
- if(t==="time")return d.toLocaleTimeString("es-CO");
- if(t==="datetime")return d.toLocaleString("es-CO");
- return "";
+function delWindow(){
+  data.windows.splice(delWin.value,1);
+  save();
 }
 
-function addLabel(){
- const id="lbl_"+Date.now();
- const win={};
- document.querySelectorAll("#label_windows input").forEach(c=>win[c.value]=c.checked);
- structure.labels[id]={
-  icon:lbl_icon.value||"",
-  name:lbl_name.value,
-  type:lbl_type.value,
-  values:lbl_values.value.split(",").map(v=>v.trim()),
-  auto:lbl_type.value==="auto"?lbl_auto.value:null,
-  windows:win
- };
- set("structure",structure);
- lbl_icon.value="";lbl_name.value="";lbl_values.value="";
-}
-
-function renderLabels(){
- Object.keys(structure.windows).forEach(w=>{
-  const c=document.getElementById("custom_"+w);
-  if(!c)return;
-  c.innerHTML="";
-  Object.values(structure.labels).forEach(l=>{
-   if(l.windows[w]){
-    const d=document.createElement("div");
-    d.className="field";
-    d.innerHTML=`<label>${l.icon?l.icon+" ":""}${l.name}</label>`;
-    let el;
-    if(l.type==="select"){
-     el=document.createElement("select");
-     l.values.forEach(v=>el.add(new Option(v,v)));
-    }else if(l.type==="auto"){
-     el=document.createElement("input");
-     el.value=autoValue(l.auto);el.readOnly=true;
-    }else el=document.createElement("input");
-    d.appendChild(el);c.appendChild(d);
-   }
+function addField(){
+  let w = data.windows[wSel.value];
+  w.fields.push({
+    icon:fIcon.value||"🏷️",
+    name:fName.value,
+    type:fType.value,
+    opt:fOpt.value||"",
+    val:""
   });
- });
+  fIcon.value=fName.value=fOpt.value="";
+  save();
 }
 
-/* ===== UTILS ===== */
-function previewWA(win){
- let t="";
- document.querySelectorAll(`#custom_${win} input,#custom_${win} select`).forEach(e=>{
-  if(e.value)t+=e.previousSibling.textContent+": "+e.value+"\n";
- });
- window.open("https://wa.me/?text="+encodeURIComponent(t));
+function saveTemplate(){
+  let w=data.windows[tplWin.value];
+  data.templates.push({
+    name:tplName.value,
+    fields:JSON.parse(JSON.stringify(w.fields))
+  });
+  tplName.value="";
+  save();
 }
-function clearForm(win){
- document.querySelectorAll(`#custom_${win} input`).forEach(i=>{
-  if(!i.readOnly)i.value="";
- });
+
+function applyTemplate(){
+  let t=data.templates[tplSel.value];
+  let w=data.windows[wSel.value];
+  t.fields.forEach(f=>w.fields.push(JSON.parse(JSON.stringify(f))));
+  save();
 }
-function createWindow(){
- const n=newWinName.value.trim();
- if(!n)return;
- structure.windows["win_"+Date.now()]={name:n};
- set("structure",structure);
- init();
- newWinName.value="";
+
+function loadSelects(){
+  delWin.innerHTML=wSel.innerHTML=tplWin.innerHTML=
+    data.windows.map((w,i)=>`<option value="${i}">${w.icon} ${w.name}</option>`).join("");
+  tplSel.innerHTML=data.templates.map((t,i)=>`<option value="${i}">⭐ ${t.name}</option>`).join("");
 }
-function renderLabelWindows(){
- label_windows.innerHTML="";
- Object.keys(structure.windows).forEach(id=>{
-  label_windows.innerHTML+=`<label><input type="checkbox" value="${id}" checked> ${structure.windows[id].name}</label><br>`;
- });
+
+function render(){
+  windows.innerHTML="";
+  data.windows.forEach((w,wi)=>{
+    let html=`<div class="card"><h3>${w.icon} ${w.name}</h3>`;
+    w.fields.forEach((f,fi)=>{
+      if(f.type==="cam"){
+        html+=`
+        <div class="field">
+          <span class="icon">${f.icon}</span>
+          <input type="file" accept="image/*" capture="environment"
+          onchange="preview(event,${wi},${fi})">
+        </div>
+        <img id="p${wi}${fi}" class="preview">
+        `;
+      }else if(f.type==="select"){
+        html+=`
+        <div class="field">
+          <span class="icon">${f.icon}</span>
+          <select onchange="data.windows[${wi}].fields[${fi}].val=this.value;save()">
+            ${f.opt.split("|").map(o=>`<option>${o}</option>`).join("")}
+          </select>
+        </div>`;
+      }else{
+        let t=f.type==="number"?"number":"text";
+        let v=f.type==="auto"?new Date().toLocaleString():f.val;
+        html+=`
+        <div class="field">
+          <span class="icon">${f.icon}</span>
+          <input type="${t}" value="${v}"
+          oninput="data.windows[${wi}].fields[${fi}].val=this.value;save()">
+        </div>`;
+      }
+    });
+    html+=`<button class="alt" onclick="send(${wi})">📤 Enviar WhatsApp</button></div>`;
+    windows.innerHTML+=html;
+  });
 }
+
+function preview(e,wi,fi){
+  let r=new FileReader();
+  r.onload=()=>document.getElementById(`p${wi}${fi}`).src=r.result;
+  r.readAsDataURL(e.target.files[0]);
+}
+
+function send(i){
+  let w=data.windows[i];
+  let msg=`${w.icon} ${w.name}%0A`;
+  w.fields.forEach(f=>{
+    msg+=`${f.icon} ${f.name}: ${f.val||""}%0A`;
+  });
+  window.open(`https://wa.me/${data.wsap}?text=${msg}`);
+}
+
+render();
 </script>
-
 </body>
-</html>
+ </html>
