@@ -1,321 +1,281 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Integral de Salud</title>
+<!DOCTYPE html>  <html lang="es">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Registro Integral de Salud</title>  <style>  
+:root{  
+  --bg:#f5f5f5;  
+  --card:#ffffff;  
+  --primary:#1976d2;  
+  --text:#222;  
+}  
+@media (prefers-color-scheme: dark){  
+  :root{  
+    --bg:#121212;  
+    --card:#1e1e1e;  
+    --text:#eee;  
+  }  
+}  
+body{  
+  margin:0;  
+  font-family:system-ui, sans-serif;  
+  background:var(--bg);  
+  color:var(--text);  
+}  
+header{  
+  padding:14px;  
+  font-size:20px;  
+  font-weight:bold;  
+  background:var(--primary);  
+  color:#fff;  
+  display:flex;  
+  justify-content:space-between;  
+}  
+button{  
+  border:none;  
+  border-radius:12px;  
+  padding:10px 14px;  
+  background:var(--primary);  
+  color:#fff;  
+  font-size:16px;  
+}  
+main{  
+  padding:16px;  
+  display:grid;  
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));  
+  gap:12px;  
+}  
+.card{  
+  background:var(--card);  
+  border-radius:18px;  
+  padding:16px;  
+  text-align:center;  
+  font-size:18px;  
+  box-shadow:0 4px 10px rgba(0,0,0,.1);  
+  cursor:pointer;  
+  transition:.2s;  
+}  
+.card:hover{transform:scale(1.04)}  
+.modal{  
+  position:fixed;  
+  inset:0;  
+  background:rgba(0,0,0,.5);  
+  display:none;  
+  align-items:center;  
+  justify-content:center;  
+}  
+.modalContent{  
+  background:var(--card);  
+  width:92%;  
+  max-width:500px;  
+  border-radius:18px;  
+  padding:16px;  
+  max-height:90vh;  
+  overflow:auto;  
+}  
+.field{  
+  margin-bottom:12px;  
+}  
+.field label{  
+  display:block;  
+  font-weight:bold;  
+}  
+input,select{  
+  width:100%;  
+  padding:10px;  
+  border-radius:10px;  
+  border:1px solid #ccc;  
+}  
+.bottom{  
+  display:flex;  
+  justify-content:space-between;  
+  gap:8px;  
+  margin-top:12px;  
+}  
+img.preview{  
+  width:100%;  
+  border-radius:12px;  
+  margin-top:8px;  
+}  
+</style>  </head>  <body>  <header>  
+  🏥 Registro Integral  
+  <button onclick="openConfig()">⚙️</button>  
+</header>  <main id="main"></main>  <!-- MODAL CONFIG -->  <div class="modal" id="config">  
+  <div class="modalContent">  
+    <h3>⚙️ Configuración</h3>  <div class="field">  
+  <label>📤 Número WhatsApp</label>  
+  <input id="wsap" placeholder="Ej: 573001234567">  
+</div>  
 
-<style>
-:root{
-  --bg:#f5f5f5;
-  --card:#ffffff;
-  --primary:#1976d2;
-  --text:#222;
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#121212;
-    --card:#1e1e1e;
-    --text:#eee;
-  }
-}
-body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-header{
-  padding:14px;
-  font-size:20px;
-  font-weight:bold;
-  background:var(--primary);
-  color:#fff;
-  display:flex;
-  justify-content:space-between;
-}
-button{
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  background:var(--primary);
-  color:#fff;
-  font-size:16px;
-}
-main{
-  padding:16px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  padding:16px;
-  text-align:center;
-  font-size:18px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-  cursor:pointer;
-  transition:.2s;
-}
-.card:hover{transform:scale(1.04)}
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.modalContent{
-  background:var(--card);
-  width:92%;
-  max-width:500px;
-  border-radius:18px;
-  padding:16px;
-  max-height:90vh;
-  overflow:auto;
-}
-.field{
-  margin-bottom:12px;
-}
-.field label{
-  display:block;
-  font-weight:bold;
-}
-input,select{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-.bottom{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  margin-top:12px;
-}
-img.preview{
-  width:100%;
-  border-radius:12px;
-  margin-top:8px;
-}
+<hr>  
 
-/* NUEVO */
-.fieldAdmin{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border:1px dashed #ccc;
-  border-radius:10px;
-  padding:6px;
-  margin-bottom:6px;
-}
-.fieldAdmin.locked{opacity:.5}
-.smallBtn{padding:6px 8px;font-size:14px}
-</style>
-</head>
+<h4>➕ Crear ventana</h4>  
+<input id="vName" placeholder="Nombre">  
+<input id="vIcon" placeholder="Emoji">  
+<button onclick="addWindow()">Agregar</button>  
 
-<body>
+<hr>  
 
-<header>
-  🏥 Registro Integral
-  <button onclick="openConfig()">⚙️</button>
-</header>
+<h4>🧩 Crear campo</h4>  
+<select id="vSelect"></select>  
+<input id="cName" placeholder="Nombre campo">  
+<input id="cIcon" placeholder="Emoji">  
+<select id="cType">  
+  <option value="text">Texto</option>  
+  <option value="number">Numérico</option>  
+  <option value="auto">Automático</option>  
+</select>  
+<input id="cOpt" placeholder="Opciones | separadas">  
+<label><input type="checkbox" id="cCam"> Usar cámara</label>  
+<button onclick="addField()">Agregar campo</button>  
 
-<main id="main"></main>
+<hr>  
 
-<!-- CONFIG -->
-<div class="modal" id="config">
-  <div class="modalContent">
-    <h3>⚙️ Configuración</h3>
+<h4>🗑️ Eliminar ventana</h4>  
+<div id="delList"></div>  
 
-    <div class="field">
-      <label>📤 Número WhatsApp</label>
-      <input id="wsap">
-    </div>
+<button onclick="closeConfig()">Cerrar</button>
 
-    <hr>
-
-    <h4>🧩 Campos (editar / bloquear / ordenar)</h4>
-    <select id="vSelect"></select>
-    <div id="fieldAdminList"></div>
-
-    <button onclick="closeConfig()">Cerrar</button>
-  </div>
-</div>
-
-<!-- FORM -->
-<div class="modal" id="formModal">
-  <div class="modalContent">
-    <h3 id="formTitle"></h3>
-    <div id="formFields"></div>
-    <div class="bottom">
-      <button onclick="sendWhats()">📤 WhatsApp</button>
-      <button onclick="clearForm()">🧹 Limpiar</button>
-      <button onclick="closeForm()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let data = JSON.parse(localStorage.getItem("appData")) || {windows:[], wsap:""};
-let currentWin=null;
-let dragIndex=null;
-
-function save(){localStorage.setItem("appData",JSON.stringify(data))}
-
-function render(){
-  main.innerHTML="";
-  data.windows.forEach((w,i)=>{
-    let d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`${w.icon}<br>${w.name}`;
-    d.onclick=()=>openForm(i);
-    main.appendChild(d);
-  });
-}
-
-function openConfig(){
-  wsap.value=data.wsap||"";
-  vSelect.innerHTML=data.windows.map((w,i)=>`<option value="${i}">${w.icon} ${w.name}</option>`).join("");
-  renderFieldAdmin();
-  config.style.display="flex";
-}
-
-function closeConfig(){
-  data.wsap=wsap.value;
-  save(); render();
-  config.style.display="none";
-}
-
-/* ===== NUEVO BLOQUE ===== */
-
-function renderFieldAdmin(){
-  let w=data.windows[vSelect.value];
-  if(!w) return;
-  fieldAdminList.innerHTML="";
-  w.fields.forEach((f,i)=>{
-    if(f.locked===undefined) f.locked=false;
-
-    let div=document.createElement("div");
-    div.className="fieldAdmin"+(f.locked?" locked":"");
-    div.draggable=true;
-
-    div.ondragstart=()=>dragIndex=i;
-    div.ondragover=e=>e.preventDefault();
-    div.ondrop=()=>{
-      let moved=w.fields.splice(dragIndex,1)[0];
-      w.fields.splice(i,0,moved);
-      save(); renderFieldAdmin();
-    };
-
-    div.innerHTML=`
-      <span>${f.icon||""} ${f.name}</span>
-      <div>
-        <button class="smallBtn" onclick="toggleLock(${i})">${f.locked?"🔒":"🔓"}</button>
-        <button class="smallBtn" onclick="editField(${i})">✏️</button>
-        <button class="smallBtn" onclick="delField(${i})">🗑️</button>
-      </div>
-    `;
-    fieldAdminList.appendChild(div);
-  });
-}
-
-function toggleLock(i){
-  let f=data.windows[vSelect.value].fields[i];
-  f.locked=!f.locked;
-  save(); renderFieldAdmin();
-}
-
-function editField(i){
-  let f=data.windows[vSelect.value].fields[i];
-  if(f.locked) return alert("Campo bloqueado");
-  let n=prompt("Nombre del campo",f.name);
-  if(n!==null) f.name=n;
-  let e=prompt("Emoji",f.icon);
-  if(e!==null) f.icon=e;
-  save(); renderFieldAdmin();
-}
-
-function delField(i){
-  let f=data.windows[vSelect.value].fields[i];
-  if(f.locked) return alert("Campo bloqueado");
-  if(confirm("Eliminar campo?")){
-    data.windows[vSelect.value].fields.splice(i,1);
-    save(); renderFieldAdmin();
-  }
-}
-
-vSelect.onchange=renderFieldAdmin;
-
-/* ===== FORM ORIGINAL ===== */
-
-function openForm(i){
-  currentWin=i;
-  let w=data.windows[i];
-  formTitle.innerText=w.icon+" "+w.name;
-  formFields.innerHTML="";
-  w.fields.forEach((f,idx)=>{
-    let div=document.createElement("div");
-    div.className="field";
-    div.innerHTML=`<label>${f.icon} ${f.name}</label>`;
-    if(f.type==="auto"){
-      div.innerHTML+=`<input value="${new Date().toLocaleString()}" disabled>`;
-    }else if(f.opt){
-      div.innerHTML+=`<select data-i="${idx}">${f.opt.split("|").map(o=>`<option>${o}</option>`)}</select>`;
-    }else{
-      let input=document.createElement("input");
-      input.type=f.type==="number"?"number":"text";
-      input.dataset.i=idx;
-      if(f.type==="number") input.inputMode="numeric";
-      div.appendChild(input);
-    }
-    if(f.cam){
-      let fileInput=document.createElement("input");
-      fileInput.type="file";
-      fileInput.accept="image/*";
-      fileInput.capture="environment";
-      fileInput.dataset.i=idx;
-      fileInput.onchange=function(){preview(this)};
-      div.appendChild(fileInput);
-    }
-    formFields.appendChild(div);
-  });
-  formModal.style.display="flex";
-}
-
-function preview(inp){
-  let img=document.createElement("img");
-  img.className="preview";
-  img.src=URL.createObjectURL(inp.files[0]);
-  inp.after(img);
-}
-
-function closeForm(){formModal.style.display="none"}
-
-function clearForm(){
-  document.querySelectorAll("#formFields input").forEach(i=>{
-    if(!i.disabled) i.value="";
-  });
-  document.querySelectorAll("#formFields select").forEach(s=>s.selectedIndex=0);
-  document.querySelectorAll("#formFields img.preview").forEach(img=>img.remove());
-}
-
-function sendWhats(){
-  if(!data.wsap) return alert("Ingresa un número de WhatsApp");
-  let w=data.windows[currentWin];
-  let msg=`${w.icon} ${w.name}\n\n`;
-  document.querySelectorAll("#formFields input,select").forEach(e=>{
-    if(e.dataset.i!==undefined){
-      let f=w.fields[e.dataset.i];
-      msg+=`${f.icon} ${f.name}: ${e.value}\n`;
-    }
-  });
-  window.open(`https://wa.me/${data.wsap}?text=`+encodeURIComponent(msg));
-}
-
-render();
-</script>
-</body>
-</html>
+  </div>  
+</div>  <!-- MODAL FORM -->  <div class="modal" id="formModal">  
+  <div class="modalContent">  
+    <h3 id="formTitle"></h3>  
+    <div id="formFields"></div>  
+    <div class="bottom">  
+      <button onclick="sendWhats()">📤 WhatsApp</button>  
+      <button onclick="clearForm()">🧹 Limpiar</button>  
+      <button onclick="closeForm()">Cerrar</button>  
+    </div>  
+  </div>  
+</div>  <script>  
+let data = JSON.parse(localStorage.getItem("appData")) || {windows:[], wsap:""};  
+let currentWin=null;  
+  
+function save(){localStorage.setItem("appData",JSON.stringify(data))}  
+  
+function render(){  
+  main.innerHTML="";  
+  data.windows.forEach((w,i)=>{  
+    let d=document.createElement("div");  
+    d.className="card";  
+    d.innerHTML=`${w.icon} <br>${w.name}`;  
+    d.onclick=()=>openForm(i);  
+    main.appendChild(d);  
+  });  
+}  
+  
+function openConfig(){  
+  wsap.value=data.wsap||"";  
+  vSelect.innerHTML=data.windows.map((w,i)=>`<option value="${i}">${w.icon} ${w.name}</option>`).join("");  
+  delList.innerHTML=data.windows.map((w,i)=>`<div>${w.name} <button onclick="delWin(${i})">X</button></div>`).join("");  
+  config.style.display="flex";  
+}  
+  
+function closeConfig(){  
+  data.wsap=wsap.value;  
+  save(); render();  
+  config.style.display="none";  
+}  
+  
+function addWindow(){  
+  if(!vName.value) return alert("Nombre de ventana obligatorio");  
+  data.windows.push({name:vName.value,icon:vIcon.value,fields:[]});  
+  vName.value=vIcon.value="";  
+  save(); openConfig();  
+}  
+  
+function delWin(i){  
+  if(confirm("Eliminar ventana?")){  
+    data.windows.splice(i,1);  
+    save(); openConfig();  
+  }  
+}  
+  
+function addField(){  
+  let w=data.windows[vSelect.value];  
+  if(!cName.value) return alert("Nombre de campo obligatorio");  
+  w.fields.push({  
+    name:cName.value,  
+    icon:cIcon.value,  
+    type:cType.value,  
+    opt:cOpt.value,  
+    cam:cCam.checked  
+  });  
+  cName.value=cIcon.value=cOpt.value="";  
+  cCam.checked=false;  
+  save();  
+}  
+  
+function openForm(i){  
+  currentWin=i;  
+  let w=data.windows[i];  
+  formTitle.innerText=w.icon+" "+w.name;  
+  formFields.innerHTML="";  
+  w.fields.forEach((f,idx)=>{  
+    let div=document.createElement("div");  
+    div.className="field";  
+    div.innerHTML=`<label>${f.icon} ${f.name}</label>`;  
+    if(f.type==="auto"){  
+      div.innerHTML+=`<input value="${new Date().toLocaleString()}" disabled>`;  
+    }else if(f.opt){  
+      div.innerHTML+=`<select data-i="${idx}">${f.opt.split("|").map(o=>`<option>${o}</option>`)}</select>`;  
+    }else{  
+      let input=document.createElement("input");  
+      input.type=f.type==="number"?"number":"text";  
+      input.dataset.i=idx;  
+      if(f.type==="number") input.inputMode="numeric";  
+      div.appendChild(input);  
+    }  
+    if(f.cam){  
+      let fileInput=document.createElement("input");  
+      fileInput.type="file";  
+      fileInput.accept="image/*";  
+      fileInput.capture="environment";  
+      fileInput.dataset.i=idx;  
+      fileInput.onchange=function(){preview(this)};  
+      div.appendChild(fileInput);  
+    }  
+    formFields.appendChild(div);  
+  });  
+  formModal.style.display="flex";  
+}  
+  
+function preview(inp){  
+  let existing = inp.parentNode.querySelector("img.preview");  
+  if(existing) existing.remove();  
+  let img=document.createElement("img");  
+  img.className="preview";  
+  img.src=URL.createObjectURL(inp.files[0]);  
+  inp.after(img);  
+}  
+  
+function closeForm(){formModal.style.display="none"}  
+  
+function clearForm(){  
+  document.querySelectorAll("#formFields input").forEach(i=>{  
+    if(!i.disabled) i.value="";  
+  });  
+  document.querySelectorAll("#formFields select").forEach(s=>s.selectedIndex=0);  
+  document.querySelectorAll("#formFields img.preview").forEach(img=>img.remove());  
+}  
+  
+function sendWhats(){  
+  if(!data.wsap) return alert("Ingresa un número de WhatsApp antes de enviar");  
+  let w=data.windows[currentWin];  
+  let msg=`${w.icon} ${w.name}\n\n`;  
+  document.querySelectorAll("#formFields input,select").forEach(e=>{  
+    if(e.dataset.i!==undefined){  
+      let f=w.fields[e.dataset.i];  
+      msg+=`${f.icon} ${f.name}: ${e.value}\n`;  
+    }  
+  });  
+  // Agregar enlaces a imágenes  
+  document.querySelectorAll("#formFields img.preview").forEach((img,i)=>{  
+    msg+=`📷 Imagen ${i+1}: ${img.src}\n`;  
+  });  
+  window.open(`https://wa.me/${data.wsap}?text=`+encodeURIComponent(msg));  
+}  
+  
+render();  
+</script>  </body>  
+  </html>
