@@ -419,8 +419,9 @@ function openForm(i){
     d.className="field";
     d.innerHTML=`<label>${f.icon} ${f.name}</label>`;
     if(f.type==="auto"){
-      // ===== CORRECCIÓN: agregar data-i para fecha/hora =====
-      d.innerHTML+=`<input data-i="${idx}" value="${new Date().toLocaleString()}" disabled>`;
+      // ===== FECHA Y HORA SEPARADAS =====
+      d.innerHTML+=`<input data-i="${idx}" data-auto="date" value="${new Date().toLocaleDateString()}" disabled>`;
+      d.innerHTML+=`<input data-i="${idx}" data-auto="time" value="${new Date().toLocaleTimeString()}" disabled>`;
     }else if(f.opt){
       d.innerHTML+=`<select data-i="${idx}">${f.opt.split("|").map(o=>`<option>${o}</option>`).join("")}</select>`;
     }else{
@@ -443,7 +444,9 @@ function sendWhats(){
   document.querySelectorAll("#formFields input,select").forEach(e=>{
     if(e.dataset.i!==undefined){
       let f=w.fields[e.dataset.i];
-      msg+=`${f.icon} ${f.name}: ${e.value}\n`;
+      if(e.dataset.auto==="date") msg+=`${f.icon} ${f.name} (Fecha): ${e.value}\n`;
+      else if(e.dataset.auto==="time") msg+=`${f.icon} ${f.name} (Hora): ${e.value}\n`;
+      else msg+=`${f.icon} ${f.name}: ${e.value}\n`;
     }
   });
   window.open(`https://wa.me/${data.wsap}?text=`+encodeURIComponent(msg));
